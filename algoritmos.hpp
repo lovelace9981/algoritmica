@@ -114,15 +114,14 @@ void mergeSort(vector<int> &unorderedVector, const int left, const int right)
 }
 
 /*
-    El algoritmo
+    Ejercicio 2:
+    El algoritmo de repetidos Eficiente con entrada ordenada
+    // Ordenamos el vector previamente con el algoritmo mas eficiente posible debido a los elementos aleatorios generados.
+    // mergeSort(vectorOriginal, 0, N);
 
 */
 void repetidosEficienteOrdenado(vector<int> &vectorOriginal, vector<int> &vectorFinal, const int N)
 {
-    // Ordenamos el vector con el algoritmo mas eficiente posible
-    // mergeSort(vectorOriginal, 0, N);
-
-    // EJE 2
     // Cogemos de los elementos ordenados, los que no se repitan mas de una vez
     int actual = -1;
 

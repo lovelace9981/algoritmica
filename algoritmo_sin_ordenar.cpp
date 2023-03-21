@@ -8,16 +8,11 @@ using namespace std ;
 
 
 int main(int argc, char *argv[]){
-	/* Vectores de entrada de prueba del ejercicio*/
-	// 5 1 9 2 2 5 1 1 7
-	// 1 1 1 2 2 5 5 7 9
-	vector<int> ejercicio1 = {5,1,9,2,2,5,1,1,7};
     vector<int> vectorFinal;
-	vector<int> ejercicio2 = {1,1,1,2,2,5,5,7,9};
     vector<int> aleatorios_casos;
 	
 	int n, argumento;
-	argumento = argc - 2;
+	argumento = argc - 3;
 
     chrono::time_point<std::chrono::high_resolution_clock> t0, tf; // Para medir el tiempo de ejecución
 	double tejecucion; // tiempo de ejecucion del algoritmo en ms
@@ -36,30 +31,29 @@ int main(int argc, char *argv[]){
 		cerr<<"Error: No se pudo abrir fichero para escritura "<<argv[1]<<"\n\n";
 		return 0;
 	}
+
+	//Escribimos los nombres de las columnas del output
+	fsalida << "n " << "T(n) " << "K " << "TE(n)\n" ;
 	
 	// Inicializamos generador de no. aleatorios
 	semilla= atoi(argv[2]);
 	srand(semilla);
-
-
-
 	// Pasamos por cada tamanio de caso para el ejercicio 1
 	for (int i = 0; i < argumento; i++){
-		n = atoi(argv[i+2]);
+		n = atoi(argv[i+3]);
 		
 		//Generamos vector aleatorio de prueba, con componentes entre 0 y n-1
 		for (int j = 0; j<n; j++)
 			aleatorios_casos.push_back(rand()%n);
 
-		mergeSort(aleatorios_casos, 0, n);
 
 		cerr << "Ejecutando algoritmo ejercicio 1 para tam " << n << endl ;
 
 		t0= std::chrono::high_resolution_clock::now(); // Cogemos el tiempo en que comienza la ejecuciÛn del algoritmo
-        //Ejecutamos algoritmo ejercicio 1
-        // vectorSinRepeticion(ejercicio1, vectorFinal, ejercicio1.size());
-		repetidosEficienteOrdenado(aleatorios_casos, vectorFinal, ejercicio2.size());
-
+       
+	    //Ejecutamos algoritmo ejercicio 1
+        vectorSinRepeticion(aleatorios_casos, vectorFinal, n);
+		
 		tf= std::chrono::high_resolution_clock::now(); // Cogemos el tiempo en que finaliza la ejecuciÛn del algoritmo
 		unsigned long tejecucion= std::chrono::duration_cast<std::chrono::microseconds>(tf - t0).count();
 
