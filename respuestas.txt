@@ -1,0 +1,29 @@
+3 
+
+El tamaño del problema, depende del tamaño del vector que haya que analizar 
+para quitar los duplicados de manera iterativa.
+
+4. 5. Falta un ejemplo de cuándo ocurre el peor caso y mejor.
+
+En el caso de que el vector esté desordenado:
+	1. Si usamos un algoritmo que tenga un bucle anidado consistente en usar el vector desordenado, donde para
+cada elemento N del vector principal, se compare con cada elemento N del vector de los no repetidos, 
+donde si no existe ese elemento o todos los elementos sean distintos, su peor caso es N². 
+	En el mejor de los casos, existe un elemento y es N porque tenemos que buscarlo en el vector 
+	de los repetidos.
+ 
+Peor caso: Todos los elementos son diferentes. No hay ninguno igual, cada elemento del vector desordenado, tendría que ser comparado 
+con el vector de elementos no repetidos, haciendo que cada iteración del vector desordenado recorra todo el vector de elementos no repetidos
+hasta encontrar o no una coincidencia.
+Eficiencia peor caso: O(N²)
+Mejor caso: Todos iguales, el vector de destino con los elementos no repetidos, solo contendría un elemento, sobre el cual solo hay que 
+hacer una operación de acceso O(1). 
+Eficiencia mejor caso: O(N)
+
+En el caso de que el vector este ordenado:
+	Se usa un bucle que recorra todo el vector, junto a una variable auxiliar que nos permita tener como índice
+el elemento actual hasta encontrar algún elemento distinto.
+
+	Eficiencia mejor caso y peor caso: O(N), da igual cómo se trabaje, el vector al estar ordenado junto al uso de una variable
+auxiliar, permite que se sepa cuál es el elemento actual para ir descartando rápidamente los repetidos.
+	
