@@ -16,8 +16,8 @@ int main(int argc, char *argv[]){
 	vector<int> ejercicio2 = {1,1,1,2,2,5,5,7,9};
     vector<int> aleatorios_casos;
 	
-	int n, i, argumento;
-	argumento = argc - 3;
+	int n, argumento;
+	argumento = argc - 2;
 
     chrono::time_point<std::chrono::high_resolution_clock> t0, tf; // Para medir el tiempo de ejecución
 	double tejecucion; // tiempo de ejecucion del algoritmo en ms
@@ -44,12 +44,11 @@ int main(int argc, char *argv[]){
 
 
 	// Pasamos por cada tamanio de caso para el ejercicio 1
-	for (argumento = 0; argumento < argc; argumento++) {
-		//Cogemos el tamanio del caso
-		n = atoi(argv[argumento+3]);
+	for (int i = 0; i < argumento; i++){
+		n = atoi(argv[i+2]);
 		
 		//Generamos vector aleatorio de prueba, con componentes entre 0 y n-1
-		for (i= 0; i<n; i++)
+		for (int j = 0; j<n; j++)
 			aleatorios_casos.push_back(rand()%n);
 
 		mergeSort(aleatorios_casos, 0, n);
@@ -62,6 +61,7 @@ int main(int argc, char *argv[]){
 		repetidosEficienteOrdenado(aleatorios_casos, vectorFinal, ejercicio2.size());
 
 		tf= std::chrono::high_resolution_clock::now(); // Cogemos el tiempo en que finaliza la ejecuciÛn del algoritmo
+		unsigned long tejecucion= std::chrono::duration_cast<std::chrono::microseconds>(tf - t0).count();
 
         cerr << "\tTiempo de ejec. (us): " << tejecucion << " para tam. caso "<< n<<endl;
 
@@ -74,7 +74,8 @@ int main(int argc, char *argv[]){
 		
 		
 		// Liberamos memoria del vector
-		aleatorios_casos.empty();
+		aleatorios_casos.clear();
+		vectorFinal.clear();
     }
     // Cerramos fichero de salida
 	fsalida.close();
