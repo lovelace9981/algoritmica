@@ -45,32 +45,12 @@ void vectorSinRepeticion(const vector<int> &vectorOriginal, vector<int> &vectorF
 void merge(vector<int> &unorderedVector, const int left, const int medio, const int right)
 {
     // Iteradores, no coge el final, es un rango [left, medio), [medio, right)
-    cout << "Falla" << endl;
     vector<int>::const_iterator begin_array1 = unorderedVector.begin() + left;
     vector<int>::const_iterator end_array1_begin_array2 = unorderedVector.begin() + medio;
     vector<int>::const_iterator end_array2 = unorderedVector.begin() + right;
     // Creamos los arrays
-    cout << "Precopia" << endl;
     vector<int> array1(begin_array1, end_array1_begin_array2);
     vector<int> array2(end_array1_begin_array2, end_array2);
-    cout << "PostCopia" << endl;
-    for (int i = 0; i < array1.size(); i++){
-        cout << array1[i] << " ";
-    }
-    cout << "Fin array 1" << endl;
-
-
-    for (int i = 0; i < array2.size(); i++){
-        cout << array2[i] << " ";
-    }
-    cout << "Fin array 2" << endl;
-
-    cout << "Fin recursividad" << endl;
-
-       for (int i = left; i < right; i++){
-        cout << unorderedVector[i] << " ";
-     }
-     cout << "Fin unordered vector" << endl;
 
     // Averiguamos los tamanios de los subarrays
     int sizeofarray1 = array1.size();
@@ -112,12 +92,6 @@ void merge(vector<int> &unorderedVector, const int left, const int medio, const 
         j++;
         k++;
     }
-
-    cout << endl << "VECTOR ORDENADO " << endl ; 
-    for (int i = left; i < right; i++){
-        cout << unorderedVector[i] << " ";
-     }
-     cout << endl ;
 }
 
 void mergeSort(vector<int> &unorderedVector, const int left, const int right)
