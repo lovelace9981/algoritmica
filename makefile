@@ -21,7 +21,7 @@ rundebug: debug
 
 docs:
 	@echo "Making docs, you need pandoc package"
-	pandoc -s -V geometry:margin=1in -o documentation.pdf respuestas.md
+	pandoc -s -V geometry:margin=1in -o documentation.pdf documentation.md
 
 clean:
 	-rm *.bin

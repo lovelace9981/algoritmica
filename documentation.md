@@ -13,6 +13,7 @@
   - [Pregunta 2 - *Diseño de algoritmo con elementos repetidos ordenados.*](#pregunta-2---diseo-de-algoritmo-con-elementos-repetidos-ordenados)
   - [Pregunta 3 - *Identificación de qué variables depende el problema en cada algoritmo diseñado.*](#pregunta-3---identificacin-de-qu-variables-depende-el-problema-en-cada-algoritmo-diseado)
   - [Pregunta 4 y 5 - *Identificación de los peores y mejores casos en cada algoritmo y cálculo de los órdenes de eficiencia.*](#pregunta-4-y-5---identificacin-de-los-peores-y-mejores-casos-en-cada-algoritmo-y-clculo-de-los-rdenes-de-eficiencia)
+  - [Pregunta 6 - Pruebas experimentales de eficiencia teoríca y práctica.](#pregunta-6---pruebas-experimentales-de-eficiencia-teoríca-y-práctica)
 
 \newpage
 
@@ -33,7 +34,7 @@ El algoritmo que se encuentra en **algoritmos.hpp**, es la función llamada vect
 
 El algoritmo usado para la pregunta 2, es un algoritmo consistente en un bucle iterativo simple que recorre todo el vector de manera obligatoria, para poder obtener los elementos (previamente ordenados) donde va pasando a un vector final donde pone los elementos sin repetición.
 
-El algoritmo se encuentra en **algoritmos.hpp**, es la función llamada 
+El algoritmo se encuentra en **algoritmos.hpp**, es la función llamada
 
 ![Función que contiene el algoritmo de vector ordenado](./img/algoritmo_eficiente_ordenado.png "Función que contiene el algoritmo del vector sin ordenado")
 
@@ -67,4 +68,44 @@ En el caso del **ejercicio 2**,donde el vector este ordenado:
 **Órdenes de eficiencia:**
 
 - *Eficiencia mejor y peor caso:* O(N)
-	
+
+## Pregunta 6 - Pruebas experimentales de eficiencia teoríca y práctica.
+
+Para la ejecución del algoritmo con los datos ordenados tenemos la siguiente tabla:
+
+| N     | T(N) | K          | TE(N)       |
+| ----- | ---- | ---------- | ----------- |
+| 2000  | 9    | 0,0045     | 8,135416667 |
+| 4000  | 17   | 0,00425    | 16,27083333 |
+| 8000  | 29   | 0,003625   | 32,54166667 |
+| 16000 | 64   | 0,004      | 65,08333333 |
+| 32000 | 123  | 0,00384375 | 130,1666667 |
+| 64000 | 268  | 0,0041875  | 260,3333333 |
+
+Con un promedio de las constantes de: **0,004067708333**
+
+El gráfico sería el siguiente:
+
+![Gráfico de comparación de tiempos teóricos y prácticos para un vector ordenado](./img/graficovectorordenado.png "Gráfico de comparación de tiempos teóricos y prácticos para un vector ordenado")
+
+Para la ejecución del algoritmo con los datos sin ordenar tenemos la siguiente tabla:
+
+| N     | T(N)   | K               | TE(N)       |
+| ----- | ------ | --------------- | ----------- |
+| 2000  | 940    | 0,000235        | 686,3686523 |
+| 4000  | 2567   | 0,0001604375    | 2745,474609 |
+| 8000  | 19253  | 0,000160203125  | 10981,89844 |
+| 16000 | 40338  | 0,0001575703125 | 43927,59375 |
+| 32000 | 162624 | 0,0001588125    | 175710,375  |
+| 64000 | 645241 | 0,000157529541  | 702841,5    |
+
+Con un promedio de las constantes de: **0,0001715921631**
+
+El gráfico sería el siguiente:
+
+![Gráfico de comparación de tiempos teóricos y prácticos para un vector sin ordenar](./img/graficovectorsinordenar.png "Gráfico de comparación de tiempos teóricos y prácticos para un vector sin ordenar")
+
+
+*Conclusiones:*
+
+Es poco eficiente hacer un algoritmo iterativo para eliminar duplicados sin que los datos estén sin ordenar. Deberían ordenarse previamente, así se pueden descartar los datos mucho más rápido.
