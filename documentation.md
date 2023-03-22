@@ -69,6 +69,8 @@ En el caso del **ejercicio 2**,donde el vector este ordenado:
 
 - *Eficiencia mejor y peor caso:* O(N)
 
+\newpage
+
 ## Pregunta 6 - Pruebas experimentales de eficiencia teoríca y práctica.
 
 Para la ejecución del algoritmo con los datos ordenados tenemos la siguiente tabla:
@@ -87,6 +89,8 @@ Con un promedio de las constantes de: **0,004067708333**
 El gráfico sería el siguiente:
 
 ![Gráfico de comparación de tiempos teóricos y prácticos para un vector ordenado](./img/graficovectorordenado.png "Gráfico de comparación de tiempos teóricos y prácticos para un vector ordenado")
+
+\newpage
 
 Para la ejecución del algoritmo con los datos sin ordenar tenemos la siguiente tabla:
 
