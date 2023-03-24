@@ -1,13 +1,23 @@
-all: 
-	@echo "Compiling práctica 1.."
+all: iterativos sorting
+	@echo "Compiling all práctica 1.."
+	@echo "End compilation.."
+
+iterativos:
+	@echo "Compiling iterative algorithms.."
 	g++ -O2 --std=c++11 algoritmo_sin_ordenar.cpp -o algoritmo_sin_ordenar.bin
 	g++ -O2 --std=c++11 algoritmo_preordenado.cpp -o algoritmo_preordenado.bin
-	@echo "End compilation.."
+	@echo "End compilation of iterative algorithms.."
+
+sorting:
+	@echo "Compiling sorting algorithms.."
+	g++ -O2 --std=c++11 algoritmos_ordenacion.cpp -o algoritmos_ordenacion.bin
+	@echo "End compiling sorting algorithms.."
 
 debug:
 	@echo "Compiling práctica 1 (debug instrumentation).."
 	g++ -g --std=c++11 algoritmo_sin_ordenar.cpp -o algoritmo_sin_ordenar.bin
 	g++ -g --std=c++11 algoritmo_preordenado.cpp -o algoritmo_preordenado.bin
+	g++ -g --std=c++11 algoritmos_ordenacion.cpp -o algoritmos_ordenacion.bin
 	@echo "End compilation (debug instrumentation).."
 
 run: all

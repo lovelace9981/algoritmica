@@ -94,19 +94,23 @@ void merge(vector<int> &unorderedVector, const int left, const int medio, const 
     }
 }
 
-void mergeSort(vector<int> &unorderedVector, const int left, const int right)
-{
+/*
+    Algoritmo de Ordenacion MergeSort. D&C
+*/
+void mergeSort(vector<int> &unorderedVector, const int left, const int right) {
     // punto medio
     // int medio = (left + (right - left)) / 2;
     int medio = (left+right) / 2;
     // 1 + (2 - 1) / 2 = 2 / 2 = 1  l == m
 
+    /*
+        Control de que no se puede dividir mas el array, se convierte en un caso base. Donde medio y left ya son el mismo elemento
+    */
     if (medio == left){
         return;
     }
 
-    if (left < right)
-    {
+    if (left < right) {
     mergeSort(unorderedVector, left, medio);
     mergeSort(unorderedVector, medio , right);
     merge(unorderedVector, left, medio, right);
@@ -134,3 +138,81 @@ void repetidosEficienteOrdenado(vector<int> &vectorOriginal, vector<int> &vector
         }
     }
 }
+
+template <class T>
+class APO {
+    private:
+        vector<T> apo;
+
+        void swap(T * l, T * r){
+            T intercambio = *l;
+            *l = *r;
+            *r = intercambio;
+        }
+
+        /* 
+            Reestructuracion del arbol
+            N SIZE OF HEAP
+            i node rooted of HEAP N
+        */
+        void heapify(int N, int i){
+            int hijo_left = 2 * i + 1;
+            int hijo_right = 2 * i + 2;
+            int largest = i;
+
+            // Comparamos si alguno de los hijos es el mas grande
+            if (hijo_left < N && apo[hijo_left] > apo[largest]){
+                largest = hijo_left;
+            }
+
+            if (hijo_right < N && apo[hijo_right] > apo[largest]){
+                largest = hijo_right;
+            }
+            
+            if (largest != i){
+                swap(&apo[i], &apo[largest]);
+
+                // Recursively heapify the affected
+                // sub-tree
+                heapify(N, largest);
+            }
+        };
+        
+    public:
+        APO(const vector<T> & v){
+            apo = v;
+
+        }
+
+        APO(){}
+
+        ~APO(){
+            if (apo.size() > 0){
+                apo.clear();
+            }
+        }
+
+        APO<T>& operator= (const vector<T> & v){
+            this -> apo = v;
+            return *this;
+        }
+
+        void HeapSort(){
+            // Formamos el arbol
+            for (int i = apo.size() / 2 - 1; i >= 0; i--){
+                heapify(apo.size(), i);
+            }
+
+            // HeapSorting
+            for (int i = apo.size() - 1; i >= 0; i--){
+                swap(&apo[0],&apo[i]);
+                heapify(i, 0);
+            }
+        }
+
+        void printVectorOrdenado(){
+            for (int i = 0; i < apo.size(); i++)
+                cout << apo[i] << " ";
+            cout << endl;
+        }
+    };
