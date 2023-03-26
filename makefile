@@ -20,8 +20,15 @@ debug:
 	g++ -g --std=c++11 algoritmos_ordenacion.cpp -o algoritmos_ordenacion.bin
 	@echo "End compilation (debug instrumentation).."
 
-recursive: sorting
-	@echo "Running recursive algorithms with different problem sizes."
+runiterativos: iterativos
+	@echo "Running iterative algorithms with different problem sizes..."
+	@echo "Running with unordered array algorithms..."
+	./algoritmo_sin_ordenar.bin sin_ordenar 0.5 2000 4000 8000 16000 32000 64000
+	@echo "Running with oredered array algorithms..."
+	./algoritmo_preordenado.bin ordenado 0.5 2000 4000 8000 16000 32000 64000
+
+runsorting: sorting
+	@echo "Running recursive algorithms with different problem sizes..."
 	./algoritmos_ordenacion.bin ordenacion_ 0.5 2000 4000 8000 16000 32000 64000
 
 run: all

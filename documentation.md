@@ -1,19 +1,74 @@
 ![](./img/title.png )
 
 
-
 # Práctica 1: Análisis de eficiencia de algoritmos
 ## Autores: Pedro Antonio Mayorgas Parejo y Alejandro Ramos Peña
 
 \newpage
 
 # Table of contents
-- [Análisis de eficiencia de algoritmos iterativos de ordenación.](#anlisis-de-eficiencia-de-algoritmos-iterativos-de-ordenacin)
-  - [Pregunta 1 - *Diseño de algoritmo con elementos repetidos sin ordenar.*](#pregunta-1---diseo-de-algoritmo-con-elementos-repetidos-sin-ordenar)
-  - [Pregunta 2 - *Diseño de algoritmo con elementos repetidos ordenados.*](#pregunta-2---diseo-de-algoritmo-con-elementos-repetidos-ordenados)
-  - [Pregunta 3 - *Identificación de qué variables depende el problema en cada algoritmo diseñado.*](#pregunta-3---identificacin-de-qu-variables-depende-el-problema-en-cada-algoritmo-diseado)
-  - [Pregunta 4 y 5 - *Identificación de los peores y mejores casos en cada algoritmo y cálculo de los órdenes de eficiencia.*](#pregunta-4-y-5---identificacin-de-los-peores-y-mejores-casos-en-cada-algoritmo-y-clculo-de-los-rdenes-de-eficiencia)
-  - [Pregunta 6 - Pruebas experimentales de eficiencia teoríca y práctica.](#pregunta-6---pruebas-experimentales-de-eficiencia-teoríca-y-práctica)
+- [Práctica 1: Análisis de eficiencia de algoritmos](#práctica-1-análisis-de-eficiencia-de-algoritmos)
+  - [Autores: Pedro Antonio Mayorgas Parejo y Alejandro Ramos Peña](#autores-pedro-antonio-mayorgas-parejo-y-alejandro-ramos-peña)
+- [Table of contents](#table-of-contents)
+- [Ejecución y compilación](#ejecución-y-compilación)
+- [Estructura de ficheros](#estructura-de-ficheros)
+- [Análisis de eficiencia de algoritmos iterativos de ordenación.](#análisis-de-eficiencia-de-algoritmos-iterativos-de-ordenación)
+  - [Pregunta 1 - *Diseño de algoritmo con elementos repetidos sin ordenar.*](#pregunta-1---diseño-de-algoritmo-con-elementos-repetidos-sin-ordenar)
+  - [Pregunta 2 - *Diseño de algoritmo con elementos repetidos ordenados.*](#pregunta-2---diseño-de-algoritmo-con-elementos-repetidos-ordenados)
+  - [Pregunta 3 - *Identificación de qué variables depende el problema en cada algoritmo diseñado.*](#pregunta-3---identificación-de-qué-variables-depende-el-problema-en-cada-algoritmo-diseñado)
+  - [Pregunta 4 y 5 - *Identificación de los peores y mejores casos en cada algoritmo y cálculo de los órdenes de eficiencia.*](#pregunta-4-y-5---identificación-de-los-peores-y-mejores-casos-en-cada-algoritmo-y-cálculo-de-los-órdenes-de-eficiencia)
+  - [Pregunta 6 - *Pruebas experimentales de eficiencia teoríca y práctica.*](#pregunta-6---pruebas-experimentales-de-eficiencia-teoríca-y-práctica)
+- [Análisis de eficiencia de algoritmos recursivos de ordenación.](#análisis-de-eficiencia-de-algoritmos-recursivos-de-ordenación)
+  - [Pregunta 1. *Calculo de la ecuación en recurrencias y el orden del algoritmo en el caso peor, para las funciones Hanoi y HeapSort.*](#pregunta-1-calculo-de-la-ecuación-en-recurrencias-y-el-orden-del-algoritmo-en-el-caso-peor-para-las-funciones-hanoi-y-heapsort)
+  - [Pregunta 2. *Comparación de la eficiencia del algoritmo HeapSort con el algoritmo MergeSort.*](#pregunta-2-comparación-de-la-eficiencia-del-algoritmo-heapsort-con-el-algoritmo-mergesort)
+    - [*Algoritmo MergeSort*](#algoritmo-mergesort)
+    - [*Algoritmo HeapSort*](#algoritmo-heapsort)
+    - [*Análisis del algoritmo de HeapSort vs MergeSort*](#análisis-del-algoritmo-de-heapsort-vs-mergesort)
+
+\newpage
+
+# Ejecución y compilación
+
+Este trabajo tiene un makefile asociado que permite la compilación en los siguientes modos:
+
+```bash
+# Permite compilar todo el código
+make all
+# Permite compilar los algoritmos iterativos - Ejercicio 1
+make iterativos
+# Permite compilar los algoritmos sorting - Ejercicios 2
+make sorting
+# Permite compilar con los flag de debug para gdb
+make debug
+# Permite la ejecución de todos los algoritmos con los parámetros preparados
+make run
+# Permite la ejecución de los algoritmos de ordenación
+make runsorting
+# Permite la ejecución de los algoritmos iterativos con el array sin ordenar y ordenado
+make runiterativos
+# Permite la ejecución de los programas con los flags de debug (REQ DEP gdb)
+make rundebug
+# Permite la creación de la documentación actualizada en PDF (REQ DEP pandoc)
+make docs
+```
+**REQ DEP**: Indica que se requieren dependencias adicionales a instalar en una distribución GNU/Linux.
+\newpage 
+
+# Estructura de ficheros
+Cada fichero .cpp de los algoritmos se corresponde con una parte de la práctica.
+
+- Parte 1:
+  - *algoritmo_sin_ordenar.cpp* Este fichero de código fuente, es el que tiene el problema de descartar los elementos duplicados en un array sin ordenar.
+  - *algoritmo_preordenado.cpp* Este fichero de código fuente, es el que tiene el problema de descartar los elementos duplicados en un array preordenado, donde al ser generados los arrays de manera aleatoria, se preordenan con MergeSort.
+- Parte 2:
+  - *algoritmos_ordenacion.cpp* Este fichero de código fuente, es el que compara MergeSort con HeapSort, al compararse, se generan dos ficheros .csv con el prefijo ordenacion_, donde el sufijo se pone según la salida del algoritmo que corresponda.
+- Biblioteca:
+  - *algoritmos.hpp*: Biblioteca que contiene:
+    - Las funciones siguientes: 
+      - ```c++ void vectorSinRepeticion(const vector<int> &vectorOriginal, vector<int> &vectorFinal, const int N)``` Esta función es la que se ejecuta en *algoritmo_sin_ordenar.cpp*
+      - ```c++ void repetidosEficienteOrdenado(vector<int> &vectorOriginal, vector<int> &vectorFinal, const int N)``` Esta función es la que se ejecuta en *algoritmo_preordenado*.
+      - ```c++ void mergeSort(vector<int> &unorderedVector, const int left, const int right)``` Esta función es el algoritmo recursivo mergeSort, tiene otras funciones internas, como merge que es la que hace la ordenación.
+      - ```c++ template <class T> class APO``` Es la clase APO como template, para independizarla de los tipos de datos atómicos. Es del Árbol Parcialmente Ordenado, que es la que contiene el algoritmo de HeapSort, se crea como clase ya que las funciones relacionadas con la ordenación están entrerrelacionadas entre sí. Se ha hecho por que es más cómodo inicializar una clase y llamar al método de ordenación en vez de estar generando en el main varios arrays sueltos, para finalmente llamar a una función suelta.
 
 \newpage
 
@@ -71,7 +126,7 @@ En el caso del **ejercicio 2**,donde el vector este ordenado:
 
 \newpage
 
-## Pregunta 6 - Pruebas experimentales de eficiencia teoríca y práctica.
+## Pregunta 6 - *Pruebas experimentales de eficiencia teoríca y práctica.*
 
 Para la ejecución del algoritmo con los datos ordenados tenemos la siguiente tabla:
 
@@ -113,3 +168,111 @@ El gráfico sería el siguiente:
 *Conclusiones:*
 
 Es poco eficiente hacer un algoritmo iterativo para eliminar duplicados sin que los datos estén sin ordenar. Deberían ordenarse previamente, así se pueden descartar los datos mucho más rápido.
+
+\newpage
+
+# Análisis de eficiencia de algoritmos recursivos de ordenación.
+
+## Pregunta 1. *Calculo de la ecuación en recurrencias y el orden del algoritmo en el caso peor, para las funciones Hanoi y HeapSort.*
+
+*Ecuación en recurrencia Hanoi*
+```
+Hanoi
+T(n) = {
+  1 n = 0
+  2T(n-1) + 1 n > 0
+}
+```
+
+*Ecuación en recurrencias HeapSort y sus algoritmos relacionados*
+```
+HeapSort
+T(n) = 2n * O(log n) + O(1) E O(n * log n)
+
+insertarEnPos
+T(n) = {
+  1 n = 0
+  1 + T(n/2) n > 2
+}
+
+Reestructurar raíz
+
+T(n) = {
+  1 n = 0
+  T(n/2)+O(1) n > 0
+}
+```
+
+**Del algoritmo de Hanoi**
+
+Como podemos ver, en el algoritmo recursivo de Hanoi cuando n es mayor que 0 se hacen 2 llamadas a recursivas a la función con un tamaño de n-1, además de la operación de mover un disco que tiene una eficiencia constante.
+Su ecuación recursiva sería T(n)=1 si n=0 ; 2T(n-1)+1 si n>0.
+
+Resolviendo la ecuación recursiva tenemos que el polinomio característico 
+de la función es (x-2)(x-1) (sus dos raices) y que la ecuación del tiempo nos quedaría tal que: 
+t(n) = c1 * 2^n + c2 * 1^n, que pertenece al orden de eficiencia 2^n.
+
+**Del algoritmo Heapsort en una función**
+
+- El algoritmo de HeapSort llama para un problema de tamaño n, n veces a dos algoritmos de eficiencia log(n), es por eso que el orden de eficiencia del algoritmo es de n * log(n), ya que sería de eficiencia 2n * log(n) que pertenece al orden O(n * log(n)).
+
+**De la función insertar en pos**
+
+Cuando se hace la llamada recursiva lo hacemos con la posición pos, que ha sido dividida entre dos pues depende de la altura del árbol que en el peor de los casos será n/2. Además le sumamos una eficiencia constante pues se hacen comparaciones y asignaciones las cuales son de orden 1.
+Esto nos da que tiene una eficiencia de orden log(n).
+
+**De la función reestructurar raíz**
+
+Para reeestructurarRaiz tenemos lo mismo, pero la posición en vez de empezar en un número alto comienza en el más bajo y se va multiplicando por 2, es por eso que la llamada recursiva que se hace tendrá un tamaño de n/2, ya que también depende de la altura del árbol que en el peor de los casos será de n/2. Al igual que en insertarPos le añadimos un orden constante por las comparaciones y asignaciones que se hacen, que son de orden constante.
+Esto nos da que tiene una eficiencia de orden log(n).
+
+\newpage
+
+## Pregunta 2. *Comparación de la eficiencia del algoritmo HeapSort con el algoritmo MergeSort.*
+
+### *Algoritmo MergeSort*
+
+Para la ejecución del algoritmo con el algoritmo *MergeSort* tenemos la siguiente tabla:
+
+| N     | T(N) | K             | TE(N)       |
+| ----- | ---- | ------------- | ----------- |
+| 2000  | 159  | 0,02408339218 | 148,1201142 |
+| 4000  | 317  | 0,02200129931 | 323,2551887 |
+| 8000  | 660  | 0,02113709914 | 700,5402982 |
+| 16000 | 1415 | 0,02103591248 | 1509,140438 |
+| 32000 | 2960 | 0,02053205785 | 3234,40056  |
+| 64000 | 7943 | 0,02582287298 | 6901,040486 |
+
+Con un promedio de las constantes de: **0,02243543899**
+
+El gráfico sería el siguiente:
+
+![Gráfico de comparación de tiempos teóricos y prácticos para MergeSort](./img/graficomergesort.png "Gráfico de comparación de tiempos teóricos y prácticos para MergeSort")
+
+\newpage
+
+### *Algoritmo HeapSort*
+
+Para la ejecución del algoritmo con el algoritmo *HeapSort* tenemos la siguiente tabla:
+
+| N     | T(N) | K             | TE(N)       |
+| ----- | ---- | ------------- | ----------- |
+| 2000  | 93   | 0,01408651241 | 84,93027136 |
+| 4000  | 169  | 0,01172939932 | 185,3505923 |
+| 8000  | 377  | 0,01207376723 | 401,6812839 |
+| 16000 | 798  | 0,01186336266 | 865,3227664 |
+| 32000 | 1826 | 0,01266606001 | 1854,56593  |
+| 64000 | 4542 | 0,01476614492 | 3956,972653 |
+
+Con un promedio de las constantes de: **0,01286420776**
+
+El gráfico sería el siguiente:
+
+![Gráfico de comparación de tiempos teóricos y prácticos para HeapSort](./img/graficoheapsort.png "Gráfico de comparación de tiempos teóricos y prácticos para HeapSort")
+
+
+### *Análisis del algoritmo de HeapSort vs MergeSort*
+
+Los algoritmos tienen una eficiencia asintótica similar, es decir que tienen una complejidad de peor caso O(n log n), sin embargo hay diferencias vitales en los códigos que permiten elegir un código o otro. Si nos preocupa la memoria, el algoritmo HeapSort es el mejor ya que no hace una copia de los datos fuera del vector o la estructura de datos original generalmente un array, generando un estrés adicional sobre accesos a memoria y copia de datos. Generando un proceso de copia adicional de O(n).
+
+Si nos preocupa la estabilidad, es decir que se mantenga un orden relativo de los elementos dentro del heap que crea el algoritmo. MergeSort no es estable cuando la ordenación depende de más de un parámetro o variable. Por lo que puede dar a ordenaciones incorrectas aunque aparentemente esté ordenado.
