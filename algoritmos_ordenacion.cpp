@@ -17,6 +17,7 @@ int main(int argc, char *argv[]){
 	unsigned long int semilla;
     unsigned long tejecucion;
 	ofstream fsalida;
+	ofstream fsalida2;
 	
 	if (argc <= 3) {
 		cerr<<"\nError: El programa se debe ejecutar de la siguiente forma.\n\n";
@@ -25,7 +26,11 @@ int main(int argc, char *argv[]){
 	}
 	
 	// Abrimos fichero de salida
-	fsalida.open(argv[1]);
+	string merge = string(argv[1]) + "merge.csv";
+	string heapsort = string(argv[1]) + "heapsort.csv";
+	fsalida.open(heapsort);
+	fsalida2.open(merge);
+
 	if (!fsalida.is_open()) {
 		cerr<<"Error: No se pudo abrir fichero para escritura "<<argv[1]<<"\n\n";
 		return 0;
@@ -33,6 +38,8 @@ int main(int argc, char *argv[]){
 	
 	//Escribimos los nombres de las columnas del output
 	fsalida << "n " << "T(n) " << "K " << "TE(n)\n" ;
+	fsalida2 << "n " << "T(n) " << "K " << "TE(n)\n" ;
+
 
 	// Inicializamos generador de no. aleatorios
 	semilla= atoi(argv[2]);
@@ -64,7 +71,7 @@ int main(int argc, char *argv[]){
         cerr << "\tTiempo de ejec. (us): " << tejecucion << " para tam. caso "<< n << endl;
 
         // Guardamos tam. de caso y t_ejecucion a fichero de salida
-		fsalida << n << " " << tejecucion << " HeapSort\n";
+		fsalida << n << " " << tejecucion << "\n";
     
         cerr << "Ejecutando algoritmo MergeSort para tam " << n << endl ;
 
@@ -78,7 +85,7 @@ int main(int argc, char *argv[]){
         cerr << "\tTiempo de ejec. (us): " << tejecucion << " para tam. caso "<< n << endl;
 
         // Guardamos tam. de caso y t_ejecucion a fichero de salida
-		fsalida << n << " " << tejecucion << " MergeSort\n";
+		fsalida2 << n << " " << tejecucion << "\n";
 		
 	
 
