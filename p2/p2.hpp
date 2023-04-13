@@ -183,6 +183,14 @@ class P2 {
                 no_dominados_left = no_dominados_recursive1(min, max/2);
                 no_dominados_right = no_dominados_recursive1(max/2+1, max);
 
+                // Los no dominados de la izquierda pueden ser dominados por alguno de la derecha y viceversa.
+                // Para todos los de la izquierda, hay que comprobar si es dominado por alguno.
+                // Para todos los de la derecha, hay que comprobar si es dominado por alguno.
+                // Primero comprobamos si los de la derecha son dominados, si no es dominado lo agregamos a el array no dominados derDef
+                // Después, comprobamos los de la izquierda pero solo con los del vector de no dominados derDef (los no dominados reales
+                // de la derecha). Si no es dominado por ninguno, se agrega a un no dominados izqDef
+                // Después tendríamos que unir los dos vectores izqDef y derDef.
+
                 // Se ha encontrado el caso base, se procede a buscar los no dominados iniciales comparados de dos en dos
                 if (no_dominados_left.empty() && no_dominados_right.empty()){
                     for (int i = min; i < max-1; i++){
@@ -207,6 +215,10 @@ class P2 {
                     }
 
                     no_dominados_right.clear();
+
+                    /*  Al hacerlo de esta manera, estamos volviendo a comparar todos los de la izquierda con ellos mismos
+                        e igualmente con los de la derecha, lo cual es menos eficaz.
+                     */ 
 
                     for (int i = min; i < max-1; i++){
                         for (int j = i + 1; j < max; j++){
