@@ -9,6 +9,7 @@ using namespace std;
 
 /**
  * Clase que nos da los numeros no dominados en un plano de dimensión K
+ * PREORDENAR
 */
 template <class T>
 class P2 {
