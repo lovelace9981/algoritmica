@@ -1,44 +1,41 @@
-all: iterativos sorting
-	@echo "Compiling all práctica 1.."
+K_DIMENSION = 4
+
+all: iterativos dcd
+	@echo "Compiling all práctica 2.."
 	@echo "End compilation.."
 
 iterativos:
 	@echo "Compiling iterative algorithms.."
-	g++ -O2 --std=c++11 algoritmo_sin_ordenar.cpp -o algoritmo_sin_ordenar.bin
-	g++ -O2 --std=c++11 algoritmo_preordenado.cpp -o algoritmo_preordenado.bin
+	g++ -O2 --std=c++11 mainiterativo.cpp -o iterativo.bin
 	@echo "End compilation of iterative algorithms.."
 
-sorting:
-	@echo "Compiling sorting algorithms.."
-	g++ -O2 --std=c++11 algoritmos_ordenacion.cpp -o algoritmos_ordenacion.bin
+dcd:
+	@echo "Compiling divide and conquer algorithms.."
+	g++ -O2 --std=c++11 maindcdordered.cpp -o dcdoredered.bin
+	g++ -O2 --std=c++11 maindcdnotoredered.cpp -o dcdnotordered.bin
 	@echo "End compiling sorting algorithms.."
 
 debug:
-	@echo "Compiling práctica 1 (debug instrumentation).."
-	g++ -g --std=c++11 algoritmo_sin_ordenar.cpp -o algoritmo_sin_ordenar.bin
-	g++ -g --std=c++11 algoritmo_preordenado.cpp -o algoritmo_preordenado.bin
-	g++ -g --std=c++11 algoritmos_ordenacion.cpp -o algoritmos_ordenacion.bin
+	@echo "Compiling práctica 2 (debug instrumentation).."
+	g++ -g --std=c++11 mainiterativo.cpp -o iterativo.bin
+	g++ -g --std=c++11 maindcdordered.cpp -o dcdoredered.bin
+	g++ -g --std=c++11 maindcdnotoredered.cpp -o dcdnotordered.bin
 	@echo "End compilation (debug instrumentation).."
-
-runiterativos: iterativos
-	@echo "Running iterative algorithms with different problem sizes..."
-	@echo "Running with unordered array algorithms..."
-	./algoritmo_sin_ordenar.bin sin_ordenar 0.5 2000 4000 8000 16000 32000 64000
-	@echo "Running with oredered array algorithms..."
-	./algoritmo_preordenado.bin ordenado 0.5 2000 4000 8000 16000 32000 64000
-
-runsorting: sorting
-	@echo "Running recursive algorithms with different problem sizes..."
-	./algoritmos_ordenacion.bin ordenacion_ 0.5 2000 4000 8000 16000 32000 64000
-
-run: all
-	./algoritmo_sin_ordenar.bin datos_sin_ordenar.csv 0.5 2000 4000 8000 16000 32000 64000
-	./algoritmo_preordenado.bin datos_ordenados.csv 0.5 2000 4000 8000 16000 32000 64000
+# MODE out.csv K_DIMENSION N_POINTS_1 N_POINTS_2 ... N_POINTS_N
+run: 
+	@echo "Running iterative algorithms problem..."
+	./iterativo.bin iterativo $(K_DIMENSION) 5 10 15 20 
+	@echo "Running with ordered problem algorithms..."
+	./dcdoredered.bin sin_ordenar 0.5 2000 4000 8000 16000 32000 64000
+	@echo "Running with oredered problem algorithms..."
+	./dcdnotordered.bin ordenado 0.5 2000 4000 8000 16000 32000 64000
 
 rundebug: debug
 	@echo "Running in debug mode remember to pass params"
-	gdb algoritmo_preordenado.bin
-	gdb algoritmo_sin_ordenar.bin
+	gdb iterativo.bin
+	gdb dcdoredered.bin
+	gdb dcdnotordered.bin
+
 
 docs:
 	@echo "Making docs, you need pandoc package"
