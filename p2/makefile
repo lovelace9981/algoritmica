@@ -14,6 +14,10 @@ dcd:
 	g++ -O2 --std=c++11 maindcdordered.cpp -o dcdoredered.bin
 	g++ -O2 --std=c++11 maindcdnotoredered.cpp -o dcdnotordered.bin
 	@echo "End compiling sorting algorithms.."
+dimension:
+	@echo "Compiling dimension problem.."
+	g++ -O2 -g --std=c++11 maindimension.cpp -o dimension.bin
+	@echo "End compiling dimension problem.."
 
 debug:
 	@echo "Compiling práctica 2 (debug instrumentation).."

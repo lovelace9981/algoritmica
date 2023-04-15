@@ -59,4 +59,5 @@ void crowding_distance_assignment(std::vector<Solution>& solutions, int rank) {
     for (int i = 0; i < num_objectives; ++i) {
         std::sort(solutions.begin(), solutions.end(),
                   [=](const Solution& s1, const Solution& s2) {
-                      return s1.objectives[i]
+                      return s1.objectives[i] ;
+                  });
