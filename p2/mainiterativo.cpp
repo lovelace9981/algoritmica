@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <fstream>
 
-// #define DEBUG_PARAMS_PRINT
+#define DEBUG_PARAMS_PRINT
 
 using namespace std ;
 
