@@ -42,7 +42,7 @@ private:
                 componente_actual.push_back(actual_rand_number);
             }
 
-#ifdef DEBUG_PARAMS_GENERATOR
+            #ifdef DEBUG_PARAMS_GENERATOR
             cout << "Componente *DEBUG_PARAMS_GENERATOR* " << i << endl;
             for (int d = 0; d < K_DIMENSION; d++)
             {
@@ -50,7 +50,7 @@ private:
             }
 
             cout << endl;
-#endif
+            #endif
             componentes.push_back(componente_actual);
             componente_actual.clear();
         }
@@ -78,6 +78,33 @@ public:
         no_dominados.clear();
     }
 
+    // He puesto menor que, porque es posible que termine antes si encuentra un numbero muy pequeño
+    // Pero eso no evita problemas como el 0,9
+    bool primera_condicion(const vector<T> i, const vector<T>& j){
+        for (int k = 0; k < K_DIMENSION; ++k){
+            if (i[k] < j[k]){
+                return false;
+            }
+        }
+        // Es >=
+        return true;
+    }
+
+    
+    bool segunda_condicion (const vector<T> i, const vector<T>& j){
+        for (int k = 0; k < K_DIMENSION; ++k){
+            if (i[k] > j[k]){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool domina (const vector<T>& i, const vector<T>& j){
+        return primera_condicion(i,j) && segunda_condicion(i,j);
+    }
+
+
     /**
      * Metodo iterativo de los puntos no dominados
      * vi[a] >= vj[a] para todo a, y además se cumple
@@ -87,18 +114,16 @@ public:
     void gen_non_dominated(){
         // El elemento es no dominado, hasta que encontremos a alguno que lo domine
         bool no_dominado = true;
-        // El elemento domina alguno del vector de los no_dominados.
-        bool domina = false;
+
+        if (no_dominados.size() != 0){
+            no_dominados.clear();    
+        }
+        // Metemos el primer elemento en no dominados
+        no_dominados.push_back(componentes[0]);
+            
         // Iteradores
         typename vector<vector<T>>::iterator it_componentes = componentes.begin() + 1;
         typename vector<vector<T>>::iterator it_no_dominados = no_dominados.begin();
-
-        if (no_dominados.size() != 0)
-            no_dominados.clear();
-        
-        
-        // Metemos el primer elemento en no dominados
-        no_dominados.push_back(componentes[0]);
         
         // Comprobamos todos los elementos con el array de no dominados,
         // si encontramos que el elemento siendo comparado domina a alguno que está ya en los no dominados,
@@ -106,50 +131,34 @@ public:
         // Si el elemento siendo comparado es dominado por algún no dominado, hacemos un break
         while(it_componentes != componentes.end()){
             no_dominado = true;
+            // Refrescamos el iterador - CAUSA Del seg fault ya que el iterador anterior estaba fuera de rango.
+            it_no_dominados = no_dominados.begin();
+
             while(it_no_dominados != no_dominados.end()){
                 // Comprobamos si el elemento que estamos comparando domina al supuesto no dominado
-                // 1a Condicion: Se busca que sea mayor o igual en todas las coordenadas K.  
-                if ((*it_componentes) >= (*it_no_dominados)){
-                    for (int k = 0; k < K_DIMENSION; k++){
-                        // 2a Condicion: Para convertirse en no dominado, debemos encontrar al menos un punto en la coordenada K en el que sea 
-                        // mayor absoluto.
-                        if ((*it_componentes)[k] > (*it_no_dominados)[k]){
-                            domina = true;
-                            break; // Salimos del K ya que hay al menos un elemento que no es dominado en el espacio K del componente actual.
-                        }
-                    }
-                }
-                
-                // Comprobamos si el no dominado domina a el que estamos comparando
-                if(no_dominado){
-                    if ((*it_no_dominados) >= (*it_componentes)){
-                        for (int k = 0; k < K_DIMENSION; k++){
-                            if ((*it_no_dominados)[k] > (*it_componentes)[k]){
-                                no_dominado = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-                
-                // Aquí se actualiza el iterador de los no dominados
-                // Si el que estamos comparando domina al supuesto no dominado, lo eliminamos
-                if (domina){
+                // En este caso el comparado domina al no dominado.
+                if (domina((*it_componentes), (*it_no_dominados))) {
                     it_no_dominados = no_dominados.erase(it_no_dominados);
-                    domina = false;
                 }
-                // Si no, tan solo avanzaremos para comprobar el siguiente "no dominado"
+                // Comprobamos si el elemento que estamos comparando es dominado por el supuesto no dominado
+                // En este caso el no dominado domina al comparado.
+                else if (domina((*it_no_dominados), (*it_componentes))){
+                    no_dominado = false;
+                    ++it_no_dominados;
+                }
+                // En este caso ninguno de los dos domina al otro, por lo que continuamos sin má.
                 else{
-                    it_no_dominados++;
+                    ++it_no_dominados;
                 }
             }
             
+            // Insertamos nuevo no dominado.
             if (no_dominado){
-                no_dominados.push_back((*it_componentes));
+                no_dominados.push_back(*it_componentes);
             }
 
             // Incrementamos iterador de los componentes
-            it_componentes++;
+            ++it_componentes;
         }
 
         #ifdef DEBUG_PARAMS_ALGORITHM
