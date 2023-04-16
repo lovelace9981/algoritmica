@@ -9,8 +9,6 @@
 using namespace std ;
 
 int main(int argc, char *argv[]){
-	int n, argumento;
-	argumento = argc - 3;
 
     chrono::time_point<std::chrono::high_resolution_clock> t0, tf; // Para medir el tiempo de ejecución
 	unsigned long int semilla;
@@ -18,7 +16,7 @@ int main(int argc, char *argv[]){
 	
 	if (argc <= 3) {
 		cerr<<"\nError: El programa se debe ejecutar de la siguiente forma.\n\n";
-		cerr<<argv[0]<<" NombreFicheroSalida K_SIZE tamCaso1 tamCaso2 ... tamCasoN\n\n";
+		cerr<<argv[0]<<" NombreFicheroSalida Semilla K_SIZE tamCaso1 tamCaso2 ... tamCasoN\n\n";
 		return 0;
 	}
 	
@@ -29,25 +27,28 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 	
-	int k_dimension = atoi(argv[2]);
-	int n_problemas = argc - 3;
+	// Argumento 1 = fichero
+	// Argumento 2 = semilla
+	// Argumento 3 = k_dimension
+	// Argumento 4..n = numero de puntos
+	int k_dimension = atoi(argv[3]);
 	int tamanio_caso = 0;
-	non_dominated_iterative<int> * no_dominados_ptr;
+	non_dominated_iterative<int>* no_dominados_ptr;
+	fsalida << "n " << "T(n) " << "K " << "TE(n)\n" ;
 
-	for (int i = 0; i < n_problemas; i++){
-		tamanio_caso = atoi(argv[i+3]);
-		// CREAMOS clase de no_dominados, punto maximo 10
-		// no_dominados_ptr = new non_dominated_iterative<int>(k_dimension, tamanio_caso, 10);
-		no_dominados_ptr = new non_dominated_iterative<int>(k_dimension, tamanio_caso);
-
+	for (int i = 4 ; i < argc; i++){
+		tamanio_caso = atoi(argv[i]);
+        // no_dominados_ptr = new DCD<int>(k_dimension, tamanio_caso);
 		//Escribimos los nombres de las columnas del output
-		fsalida << "n " << "T(n) " << "K " << "TE(n)\n" ;
 
 		// Inicializamos generador de no. aleatorios
 		semilla= atoi(argv[2]);
+		
 		srand(semilla);
 
-		cerr << "Ejecutando algoritmo iterativo para tam " << n << endl ;
+		// CREAMOS clase de no_dominados, punto maximo 10
+		no_dominados_ptr = new non_dominated_iterative<int>(k_dimension, tamanio_caso, 100);
+		cerr << "Ejecutando algoritmo iterativo para tam " << tamanio_caso << endl ;
 
 		t0= std::chrono::high_resolution_clock::now(); // Cogemos el tiempo en que comienza la ejecuciÛn del algoritmo
 		//Ejecutamos algoritmo iterativo
@@ -58,11 +59,11 @@ int main(int argc, char *argv[]){
 		cerr << "\tTiempo de ejec. (us): " << tejecucion << " para tam. caso "<< tamanio_caso <<endl;
 
 		// Guardamos tam. de caso y t_ejecucion a fichero de salida
-		fsalida<<n<<" "<<tejecucion<<"\n";
+		fsalida<< tamanio_caso<<" "<<tejecucion<<"\n";
 
-		#ifdef DEBUG_PARAMS_PRINT
-		no_dominados_ptr -> print_problem();
-		#endif
+		// #ifdef DEBUG_PARAMS_PRINT
+		// 	no_dominados_ptr -> print_problem();
+		// #endif
 
 		delete no_dominados_ptr;
 	}

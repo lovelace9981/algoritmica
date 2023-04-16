@@ -1,6 +1,4 @@
-K_DIMENSION = 4
-
-all: iterativos dcd
+all: iterativos dcd dimension
 	@echo "Compiling all práctica 2.."
 	@echo "End compilation.."
 
@@ -15,23 +13,21 @@ dcd:
 	@echo "End compiling sorting algorithms.."
 dimension:
 	@echo "Compiling dimension problem.."
-	g++ -O2 -g --std=c++11 maindimension.cpp -o dimension.bin
+	g++ -O2 --std=c++11 maindimension.cpp -o dimension.bin
 	@echo "End compiling dimension problem.."
 
 debug:
 	@echo "Compiling práctica 2 (debug instrumentation).."
 	g++ -g --std=c++11 mainiterativo.cpp -o iterativo.bin
-	g++ -g --std=c++11 maindcdordered.cpp -o dcdoredered.bin
-	g++ -g --std=c++11 maindcdnotoredered.cpp -o dcdnotordered.bin
+	g++ -g --std=c++11 maindcdordered.cpp -o dcdnotordered.bin
+	g++ -g --std=c++11 maindimension.cpp -o dimension.bin
 	@echo "End compilation (debug instrumentation).."
 # MODE out.csv K_DIMENSION N_POINTS_1 N_POINTS_2 ... N_POINTS_N
-run: 
-	@echo "Running iterative algorithms problem..."
-	./iterativo.bin iterativo $(K_DIMENSION) 5 10 15 20 
-	@echo "Running with ordered problem algorithms..."
-	./dcdoredered.bin sin_ordenar 0.5 2000 4000 8000 16000 32000 64000
-	@echo "Running with oredered problem algorithms..."
-	./dcdnotordered.bin ordenado 0.5 2000 4000 8000 16000 32000 64000
+run: clean all
+	@echo "Running all the algorithms with the same sizes"
+	./iterativo.bin ./output/iterativo.txt 0 10 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536
+	./dcdnotordered.bin ./output/dyv.txt 0 10 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536
+	./dimension.bin ./output/dimension.txt 0 10 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536
 
 rundebug: debug
 	@echo "Running in debug mode remember to pass params"
@@ -45,4 +41,6 @@ docs:
 	pandoc -s -V geometry:margin=1in -o documentation.pdf documentation.md
 
 clean:
+	@echo "Cleaning all the files.."
 	-rm *.bin
+	-rm *.txt

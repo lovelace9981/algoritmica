@@ -63,6 +63,15 @@ public:
         gen_numbers();
     }
 
+    DCDDIMENSION(const int k, const int n): K_DIMENSION(k), N_COMPONENTES(n), MAX_NUMBER(10){
+            set<vector<T>> matrix {
+                {1,2,3}, {2,3,4}, {10,5,3},
+                {3,7,0}, {0,0,0}, {1,6,7},
+                {5,6,3}, {8,3,1}, {1,3,5}};
+
+            componentes=matrix;
+        }
+
     /**
      *
      *
@@ -114,32 +123,9 @@ public:
         if (conjunto2.size() > 1)
             conjunto2 = no_dominados_recursive(conjunto2, (coordenada + 1) % K_DIMENSION);
 
-        // Combinamos los conjuntos añadiendo solo no dominados
-        cout << "--------------------------" << endl ;
-        cout << "Conjunto 1: " << endl ;
-        for (auto const &punto : conjunto1)
-        {
-            for (auto const &coord : punto)
-                cout << coord << " ";
-            cout << endl;
-        }
-        cout << "Conjunto 2: " << endl ;
-        for (auto const &punto : conjunto2)
-        {
-            for (auto const &coord : punto)
-                cout << coord << " ";
-            cout << endl;
-        }
         set<vector<T>> resultado;
+        // Combinamos los dos conjuntos en uno solo dejando solo los no dominados
         resultado = combinar(conjunto1, conjunto2);
-
-        cout << "Resultado: " << endl ;
-        for (auto const &punto : resultado)
-        {
-            for (auto const &coord : punto)
-                cout << coord << " ";
-            cout << endl;
-        }
 
         // Devolvemos la lista resultante
         return resultado;
