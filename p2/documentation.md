@@ -1,29 +1,30 @@
-![](./img/title.png )
+![](./img/portada.png )
 
 
-# Práctica 2: Análisis de eficiencia de algoritmos
+# Práctica 2: Algoritmos Divide y Vencerás
 ## Autores: Pedro Antonio Mayorgas Parejo y Alejandro Ramos Peña
 
 \newpage
 
-# Table of contents
-- [Práctica 1: Análisis de eficiencia de algoritmos](#práctica-1-análisis-de-eficiencia-de-algoritmos)
+# Tabla de contenidos
+- [Práctica 2: Algoritmos Divide y Vencerás](#práctica-2-algoritmos-divide-y-vencerás)
   - [Autores: Pedro Antonio Mayorgas Parejo y Alejandro Ramos Peña](#autores-pedro-antonio-mayorgas-parejo-y-alejandro-ramos-peña)
-- [Table of contents](#table-of-contents)
+- [Tabla de contenidos](#tabla-de-contenidos)
 - [Ejecución y compilación](#ejecución-y-compilación)
 - [Estructura de ficheros](#estructura-de-ficheros)
-- [Análisis de eficiencia de algoritmos iterativos de ordenación.](#análisis-de-eficiencia-de-algoritmos-iterativos-de-ordenación)
-  - [Pregunta 1 - *Diseño de algoritmo con elementos repetidos sin ordenar.*](#pregunta-1---diseño-de-algoritmo-con-elementos-repetidos-sin-ordenar)
-  - [Pregunta 2 - *Diseño de algoritmo con elementos repetidos ordenados.*](#pregunta-2---diseño-de-algoritmo-con-elementos-repetidos-ordenados)
-  - [Pregunta 3 - *Identificación de qué variables depende el problema en cada algoritmo diseñado.*](#pregunta-3---identificación-de-qué-variables-depende-el-problema-en-cada-algoritmo-diseñado)
-  - [Pregunta 4 y 5 - *Identificación de los peores y mejores casos en cada algoritmo y cálculo de los órdenes de eficiencia.*](#pregunta-4-y-5---identificación-de-los-peores-y-mejores-casos-en-cada-algoritmo-y-cálculo-de-los-órdenes-de-eficiencia)
-  - [Pregunta 6 - *Pruebas experimentales de eficiencia teoríca y práctica.*](#pregunta-6---pruebas-experimentales-de-eficiencia-teoríca-y-práctica)
-- [Análisis de eficiencia de algoritmos recursivos de ordenación.](#análisis-de-eficiencia-de-algoritmos-recursivos-de-ordenación)
-  - [Pregunta 1. *Calculo de la ecuación en recurrencias y el orden del algoritmo en el caso peor, para las funciones Hanoi y HeapSort.*](#pregunta-1-calculo-de-la-ecuación-en-recurrencias-y-el-orden-del-algoritmo-en-el-caso-peor-para-las-funciones-hanoi-y-heapsort)
-  - [Pregunta 2. *Comparación de la eficiencia del algoritmo HeapSort con el algoritmo MergeSort.*](#pregunta-2-comparación-de-la-eficiencia-del-algoritmo-heapsort-con-el-algoritmo-mergesort)
-    - [*Algoritmo MergeSort*](#algoritmo-mergesort)
-    - [*Algoritmo HeapSort*](#algoritmo-heapsort)
-    - [*Análisis del algoritmo de HeapSort vs MergeSort*](#análisis-del-algoritmo-de-heapsort-vs-mergesort)
+- [Análisis del algoritmo iterativo.](#análisis-del-algoritmo-iterativo)
+  - [Explicación breve de cómo funciona.](#explicación-breve-de-cómo-funciona)
+  - [Análisis del orden de eficiencia.](#análisis-del-orden-de-eficiencia)
+  - [Tabla de tiempos de ejecución.](#tabla-de-tiempos-de-ejecución)
+- [Análisis del algoritmo Divide and Conquer que divide por la mitad.](#análisis-del-algoritmo-divide-and-conquer-que-divide-por-la-mitad)
+  - [Explicación breve de cómo funciona.](#explicación-breve-de-cómo-funciona-1)
+  - [Análisis del orden de eficiencia.](#análisis-del-orden-de-eficiencia-1)
+  - [Tabla de tiempos de ejecución.](#tabla-de-tiempos-de-ejecución-1)
+- [Análisis del algoritmo Divide and Conquer que divide basándose en la media de una coordenada.](#análisis-del-algoritmo-divide-and-conquer-que-divide-basándose-en-la-media-de-una-coordenada)
+  - [Explicación breve de cómo funciona.](#explicación-breve-de-cómo-funciona-2)
+  - [Análisis del orden de eficiencia.](#análisis-del-orden-de-eficiencia-2)
+  - [Tabla de tiempos de ejecución.](#tabla-de-tiempos-de-ejecución-2)
+- [Comparación de tiempos esperados y problema del umbral.](#comparación-de-tiempos-esperados-y-problema-del-umbral)
 
 \newpage
 
@@ -36,8 +37,10 @@ Este trabajo tiene un makefile asociado que permite la compilación en los sigui
 make all
 # Permite compilar los algoritmos iterativos - Ejercicio 1
 make iterativos
-# Permite compilar los algoritmos de divide and conquer básico
+# Permite compilar el algoritmos de divide and conquer básico
 make dcd
+# Permite compilar el algoritmo de divide and conquer basado en las coordenadas
+make dimension
 # Permite compilar con los flag de debug para gdb
 make debug
 # Permite la ejecución de todos los algoritmos con los parámetros preparados
@@ -61,211 +64,178 @@ Cada fichero .cpp de los algoritmos se corresponde con una parte de la práctica
   - *iterativo.hpp*: Biblioteca que contiene:
     - La clase non_dominated_iterative que tiene dos constructores, donde uno tiene el mismo vector preparado como test de prueba para verificar que el algoritmo se ejecuta correctamente. Otro constructor que genera de manera aleatoria un número arbitrario de puntos.
   - *dcddimension.hpp*: Biblioteca que contiene:
-    - La clase 
+    - La clase DCDDIMENSION contiene dos constructores, donde uno tiene un vector por defecto preparado como test de prueba para verificar que le algoritmo se ejecuta correctamente. Otro constructor que genera de manera aleatoria un número arbitrario de puntos.
 
 \newpage
 
-# Análisis de eficiencia de algoritmos iterativos de ordenación.
+# Análisis del algoritmo iterativo.
 
-## Pregunta 1 - *Diseño de algoritmo con elementos repetidos sin ordenar.*
-El algoritmo usado para la pregunta 1, es un algoritmo consistente es un doble bucle iterativo que para cada elemento N en un vector original sea repetido o no, se buscará en el vector de los no repetidos de tamaño N. Por lo tanto la eficiencia Big O, es de O(N²).
+## Explicación breve de cómo funciona.
 
-El fichero main se encuentra en **algoritmo_sin_ordenar.cpp**
+Este algoritmo es un algoritmo que tiene un bucle triple, en el cual en el primer bucle se recoge un punto que se va comparando con todos los demás puntos excepto por el mismo, buscando si es un no dominado. En el caso de que se encuentre que es un no dominado, se añade al final de todas las comprobaciones con los demás puntos.
 
-El algoritmo que se encuentra en **algoritmos.hpp**, es la función llamada vectorSinRepeticion.
+No se puede simplificar la iteración interna, ya que la omisión de cualquier punto implica que no se pueda comparar de manera correcta, sin embargo sí borramos los puntos que sean dominados por el punto del bucle externo, lo cual causa que en las siguientes iteraciones se vaya recortando el número de iteraciones del bucle interno. Lo cual implica que el peor caso que es la eficiencia calculada del iterativo nunca ocurra ya que siempre habrá algún punto dominado por otro, que lo eliminemos de los vectores de evaluación.
 
-![Función que contiene el algoritmo de vector sin ordenar](./img/algoritmo_no_eficiente_no_ordenado.png "Función que contiene el algoritmo del vector sin ordenar")
+## Análisis del orden de eficiencia.
 
-\newpage
-
-## Pregunta 2 - *Diseño de algoritmo con elementos repetidos ordenados.*
-
-El algoritmo usado para la pregunta 2, es un algoritmo consistente en un bucle iterativo simple que recorre todo el vector de manera obligatoria, para poder obtener los elementos (previamente ordenados) donde va pasando a un vector final donde pone los elementos sin repetición.
-
-El algoritmo se encuentra en **algoritmos.hpp**, es la función llamada
-
-![Función que contiene el algoritmo de vector ordenado](./img/algoritmo_eficiente_ordenado.png "Función que contiene el algoritmo del vector sin ordenado")
-
-\newpage
-
-## Pregunta 3 - *Identificación de qué variables depende el problema en cada algoritmo diseñado.*
-
-El tamaño del problema, depende del tamaño del vector que haya que analizar para quitar los duplicados de manera iterativa. Así como vamos a manejar la lógica de los datos procesados, es decir no solo es el vector de entrada que suele ser N siempre ya que tenemos que iterarlo entero, si no que cómo vamos a procesar dichos datos repetidos, en el algoritmo del ejercicio 2, es mucho más eficiente descartar los repetidos, ya que al estar ordenados no tenemos que desperdiciar accesos de lectura en el vector de salida, ya que con una simple variable auxiliar conocemos cuál es el elemento actual que puede o no repetirse en el vector original.
-
-
-## Pregunta 4 y 5 - *Identificación de los peores y mejores casos en cada algoritmo y cálculo de los órdenes de eficiencia.*
-
-En el caso del **ejercicio 1**, con un vector de entrada desordenado:
-
-- Si usamos un algoritmo que tenga un bucle anidado consistente en usar el vector desordenado, donde para cada elemento N del vector principal, se compare con cada elemento N del vector de los no repetidos, donde si no existe ese elemento o todos los elementos sean distintos, *su peor caso es N².* *En el mejor de los casos*, existe un elemento igual y es N porque tenemos que ir comprobando en el vector de entrada si hay algún elemento disinto.
-
-**Mejor caso:** Existe un único elemento, pero tenemos que comprobarlo en todo el vector de entrada.
-**Peor caso:** Todos los elementos son diferentes. No hay ninguno igual, cada elemento del vector desordenado, tendría que ser comparado con el vector de elementos no repetidos, haciendo que cada iteración del vector desordenado recorra todo el vector de elementos no repetidos hasta encontrar o no una coincidencia.
+El peor caso sería en el que todos los puntos sean no dominados (lo cual es muy raro) y entonces se compararían todos con todos (O(N²)).
+El mejor caso sería en el que solo hay un no dominado, caso en el cual solamente hariamos una comparación por elemento del vector, es decir, tendríamos una eficiencia
+de O(N).
 
 **Órdenes de eficiencia**:
 
 - *Eficiencia peor caso:* O(N²)
 - *Eficiencia mejor caso:* O(N)
 
-En el caso del **ejercicio 2**,donde el vector este ordenado:
+## Tabla de tiempos de ejecución.
 
-- Se usa un bucle que recorra todo el vector, junto a una variable auxiliar que nos permita tener como índice el elemento actual hasta encontrar algún elemento distinto.
+Para la ejecución del algoritmo iterativo para encontrar no dominados tenemos la siguiente tabla:
 
-**Mejor caso y peor caso:** Da igual cómo se trabaje, el vector al estar ordenado junto al uso de una variable auxiliar, permite que se sepa cuál es el elemento actual para ir descartando rápidamente los repetidos. Solo necesita iterar sobre el vector de los elementos ordenados.
+| N     | T(N)     | K              | TE(N)       |
+| ----- | -------- | -------------- | ----------- |
+| 32    | 17       | 0,0166015625   | 11,42695161 |
+| 64    | 59       | 0,01440429688  | 45,70780643 |
+| 128   | 231      | 0,01409912109  | 182,8312257 |
+| 256   | 872      | 0,01330566406  | 731,3249029 |
+| 512   | 3590     | 0,01369476318  | 2925,299611 |
+| 1024  | 13430    | 0,01280784607  | 11701,19845 |
+| 2048  | 48772    | 0,01162815094  | 46804,79378 |
+| 4096  | 170241   | 0,01014715433  | 187219,1751 |
+| 8192  | 594525   | 0,008859112859 | 748876,7005 |
+| 16384 | 1926479  | 0,007176693529 | 2995506,802 |
+| 32768 | 6767230  | 0,006302474067 | 11982027,21 |
+| 65536 | 20971250 | 0,004882749636 | 47928108,83 |
 
-**Órdenes de eficiencia:**
-
-- *Eficiencia mejor y peor caso:* O(N)
-
-\newpage
-
-## Pregunta 6 - *Pruebas experimentales de eficiencia teoríca y práctica.*
-
-Para la ejecución del algoritmo con los datos ordenados tenemos la siguiente tabla:
-
-| N     | T(N) | K          | TE(N)       |
-| ----- | ---- | ---------- | ----------- |
-| 2000  | 9    | 0,0045     | 8,135416667 |
-| 4000  | 17   | 0,00425    | 16,27083333 |
-| 8000  | 29   | 0,003625   | 32,54166667 |
-| 16000 | 64   | 0,004      | 65,08333333 |
-| 32000 | 123  | 0,00384375 | 130,1666667 |
-| 64000 | 268  | 0,0041875  | 260,3333333 |
-
-Con un promedio de las constantes de: **0,004067708333**
+Con un promedio de las constantes de: **0,01115913243**
 
 El gráfico sería el siguiente:
 
-![Gráfico de comparación de tiempos teóricos y prácticos para un vector ordenado](./img/graficovectorordenado.png "Gráfico de comparación de tiempos teóricos y prácticos para un vector ordenado")
+![Gráfico de comparación de tiempos teóricos y prácticos para el algoritmo iterativo](./img/iterativo.png "Gráfico de comparación de tiempos teóricos y prácticos para el algoritmo iterativo.")
 
 \newpage
 
-Para la ejecución del algoritmo con los datos sin ordenar tenemos la siguiente tabla:
+# Análisis del algoritmo Divide and Conquer que divide por la mitad.
 
-| N     | T(N)   | K               | TE(N)       |
-| ----- | ------ | --------------- | ----------- |
-| 2000  | 940    | 0,000235        | 686,3686523 |
-| 4000  | 2567   | 0,0001604375    | 2745,474609 |
-| 8000  | 19253  | 0,000160203125  | 10981,89844 |
-| 16000 | 40338  | 0,0001575703125 | 43927,59375 |
-| 32000 | 162624 | 0,0001588125    | 175710,375  |
-| 64000 | 645241 | 0,000157529541  | 702841,5    |
+## Explicación breve de cómo funciona.
 
-Con un promedio de las constantes de: **0,0001715921631**
+Este algoritmo funciona de la siguiente manera:
+
+1. Partiendo de que generamos una lista de puntos que es estructurada en un vector. La dividimos en dos mediante referencias, para evitar el proceso de copia de los vectores.
+2. Si el tamaño de el vector no es de 1, se volvería a dividir.
+3. Si el tamaño del vector es 1 se devuelve el vector sin más.
+4. Después se combinan comparando los no dominados de la izquierda y la derecha, comprobando si alguno de la derecha domina a alguno de la izquierda y viceversa.
+   1. Si el punto de los no dominados de la derecha domina a el de la izquierda, el de la izquierda se elimina y continua.
+   2. Si el punto de la derecha es dominado, pondremos a false un booleano que nos dice si este es no dominado.
+   3. Si ninguno de los dos se domina entre ellos, se continua.
+   4. Si después de comparar el de la derecha con todos los de la izquierda es no dominado, agregaremos este al vector de la izquierda como solución.
+   5. Continuamos con el siguiente punto de la derecha.
+5. Devolvemos el vector resultado de combinar izquierda y derecha.
+
+## Análisis del orden de eficiencia.
+
+El algoritmo puede ser más ineficiente en algunos casos debido a que se hacen más comparaciones que en un iterativo.
+En otros casos, al estar dividiendo el problema en subproblemas más pequeños, la función para combinar que se hace acabará haciendo muchísimas menos iteraciones
+que en un iterativo.
+- La función recursiva divide en dos el vector y llama a la recursividad para cada mitad.
+- Después se ejecuta una función combina que en el peor caso tendría una eficiencia de O(N).
+Teniendo esto en cuenta, ya que la función divide en dos y se llama a una función de O(N), sabemos que el orden de eficiencia es de O(N*log(N))
+
+**Órdenes de eficiencia**:
+
+- *Eficiencia peor y mejor caso:* O(N*log(N)).
+
+
+## Tabla de tiempos de ejecución.
+Para la ejecución del algoritmo dyv que divide por la mitad para encontrar no dominados tenemos la siguiente tabla:
+
+| N     | T(N)     | K               | TE(N)       |
+| ----- | -------- | --------------- | ----------- |
+| 32    | 28       | 0,01816679427   | 14,26495074 |
+| 64    | 99       | 0,01338179042   | 68,47176357 |
+| 128   | 1530     | 0,04431631893   | 319,5348967 |
+| 256   | 1384     | 0,008769127814  | 1460,730956 |
+| 512   | 5156     | 0,007259733945  | 6573,289303 |
+| 1024  | 19940    | 0,006317066785  | 29214,61913 |
+| 2048  | 51255    | 0,003690403689  | 128544,3242 |
+| 4096  | 188616   | 0,003112200844  | 560920,6872 |
+| 8192  | 563060   | 0,002143984612  | 2430656,311 |
+| 16384 | 2009634  | 0,001776393941  | 10470519,49 |
+| 32768 | 6224799  | 0,001283879993  | 44873654,98 |
+| 65536 | 17499139 | 0,0008459156595 | 191460927,9 |
+
+Con un promedio de las constantes de: **0,009255300908**
+El gráfico sería el siguiente:
+
+![Gráfico de comparación de tiempos teóricos y prácticos para un dvy que divide por la mitad](./img/dcdnotordered.png "Gráfico de comparación de tiempos teóricos y prácticos para un dvy que divide por la mitad")
+
+\newpage
+
+# Análisis del algoritmo Divide and Conquer que divide basándose en la media de una coordenada.
+
+## Explicación breve de cómo funciona.
+
+El enfoque de este algoritmo es el mismo que en el divide y vencerás que comentamos anteriormente, solo que en vez de dividir por la mitad, dividiremos en base a el valor de una coordenada.
+Funciona de la siguiente manera:
+
+El algoritmo tiene de entrada el conjunto (set) en el cual queremos encontrar puntos no dominados y la coordenada en la que vamos a dividir:
+1. Calculamos la media de la coordenada que introducimos como parámetro de la función recursiva (i).
+2. Dividimos el conunto (set) en puntos con un valor mayor o igual que la media y puntos con un valor menor.
+3. Hacemos la llamada recursiva para un conjunto y otro, pero la dimensión en la que dividimos será (i+1)%K (hacemos el módulo para que sea circular). La llamada recursiva se hará hasta que devuelva un vector de tamaño 1.
+4. Hacemos la combinación de los dos conjuntos usando el mismo algoritmo de combinación que en el DyV que divide por la mitad.
+5. Devolvemos el conjunto resultado de la combinación.
+
+
+## Análisis del orden de eficiencia.
+
+La división en este algoritmo no se hace de manera equitativa, pues dependiendo de la media se dividirá de una manera u otra. Es decir los subconjuntos generados para analizarlos con los subproblemas, no es igual a que si lo partieramos solo por la mitad, puede darse el caso en el que haya un conjunto de 4 puntos y se reparta con 1 punto en el subconjunto de la izquierda y con 3 en el de la derecha. Todo eso porque la media es el corte.
+En cada llamada a la función se calcula la media, cuyo calculo tiene un coste de N.
+Se llama a la función combinar que es de orden O(N).
+Y al dividir, sabemos que el orden sería de log(N).
+Es decir, en el mejor caso, el conjunto se divide de manera equitativa y tendriamos un orden O(N*log(N)).
+En el peor caso, el conjunto se divide de manera no eficiente, lo que nos da un orden de O(N²).
+
+**Órdenes de eficiencia**:
+
+- *Eficiencia mejor caso:* O(N*log(N))
+- *Eficiencia peor caso:* O(N²).
+  
+## Tabla de tiempos de ejecución.
+Para la ejecución del algoritmo dyv que divide por la mitad para encontrar no dominados tenemos la siguiente tabla:
+
+| N     | T(N)     | K               | TE(N)       |
+| ----- | -------- | --------------- | ----------- |
+| 32    | 54       | 0,03503596038   | 20,88222747 |
+| 64    | 151      | 0,02041060963   | 100,2346918 |
+| 128   | 529      | 0,01532243968   | 467,7618953 |
+| 256   | 9356     | 0,05928031779   | 2138,340093 |
+| 512   | 6679     | 0,009404143332  | 9622,530417 |
+| 1024  | 24617    | 0,007798757926  | 42766,80185 |
+| 2048  | 72906    | 0,005249294144  | 188173,9281 |
+| 4096  | 211120   | 0,00348352124   | 821122,5955 |
+| 8192  | 671259   | 0,00255597799   | 3558197,914 |
+| 16384 | 2084877  | 0,001842904166  | 15327621,78 |
+| 32768 | 6466119  | 0,001333652832  | 65689807,64 |
+| 65536 | 17927433 | 0,0008666195696 | 280276512,6 |
+
+Con un promedio de las constantes de: **0,01354868322**
+El gráfico sería el siguiente:
+
 
 El gráfico sería el siguiente:
 
-![Gráfico de comparación de tiempos teóricos y prácticos para un vector sin ordenar](./img/graficovectorsinordenar.png "Gráfico de comparación de tiempos teóricos y prácticos para un vector sin ordenar")
+![Gráfico de comparación de tiempos teóricos y prácticos para un dvy que divide basandose en la media de la coordenada.](./img/dcddimension.png "Gráfico de comparación de tiempos teóricos y prácticos para un dvy que divide basándose en la media de la coordenada.")
 
+# Comparación de tiempos esperados y problema del umbral.
 
-*Conclusiones:*
+No merece la pena en nuestros algoritmo buscar un umbral donde haya que saltar desde el algoritmo iterativo al DyV. El DyV tiene el mismo núcleo que el iterativo por lo que se comporta de una manera casi igual. Pero en conjuntos más grandes la división en subconjuntos y el análisis de estos como subproblema hace que no tenga que hacerse las comparaciones de manera exponencial o lineal según los casos. 
 
-Es poco eficiente hacer un algoritmo iterativo para eliminar duplicados sin que los datos estén sin ordenar. Deberían ordenarse previamente, así se pueden descartar los datos mucho más rápido.
+En el algoritmo DyV cuyo corte es la media de la coordenada, se comporta mucho mejor en conjuntos de puntos grandes que el iterativo, pero debido a que debemos realizar los cálculos de manera iterativa con la sumatoria, se añade mayor complejidad computacional siendo este peor que el de DyV por la mitad.
 
-\newpage
+El DyV que divide por la mitad tiene un enfoque simple, se divide por la mitad los subconjuntos hasta encontrar un caso base, a partir de ahí se van analizando los conjuntos de puntos retornados hacía arriba como subproblemas, donde se pueden descartar mucho mas eficazmente que si comparamos todo el conjunto en un bloque.
 
-# Análisis de eficiencia de algoritmos recursivos de ordenación.
+Véase en la gráfica donde comparamos los tiempos esperados después de calcular la constante oculta como se cumple lo explicado anteriormente: 
 
-## Pregunta 1. *Calculo de la ecuación en recurrencias y el orden del algoritmo en el caso peor, para las funciones Hanoi y HeapSort.*
-
-*Ecuación en recurrencia Hanoi*
-```
-Hanoi
-T(n) = {
-  1 n = 0
-  2T(n-1) + 1 n > 0
-}
-```
-
-*Ecuación en recurrencias HeapSort y sus algoritmos relacionados*
-```
-HeapSort
-T(n) = 2n * O(log n) + O(1) E O(n * log n)
-
-insertarEnPos
-T(n) = {
-  1 n = 0
-  1 + T(n/2) n > 2
-}
-
-Reestructurar raíz
-
-T(n) = {
-  1 n = 0
-  T(n/2)+O(1) n > 0
-}
-```
-
-**Del algoritmo de Hanoi**
-
-Como podemos ver, en el algoritmo recursivo de Hanoi cuando n es mayor que 0 se hacen 2 llamadas a recursivas a la función con un tamaño de n-1, además de la operación de mover un disco que tiene una eficiencia constante.
-Su ecuación recursiva sería T(n)=1 si n=0 ; 2T(n-1)+1 si n>0.
-
-Resolviendo la ecuación recursiva tenemos que el polinomio característico 
-de la función es (x-2)(x-1) (sus dos raices) y que la ecuación del tiempo nos quedaría tal que: 
-t(n) = c1 * 2^n + c2 * 1^n, que pertenece al orden de eficiencia 2^n.
-
-**Del algoritmo Heapsort en una función**
-
-- El algoritmo de HeapSort llama para un problema de tamaño n, n veces a dos algoritmos de eficiencia log(n), es por eso que el orden de eficiencia del algoritmo es de n * log(n), ya que sería de eficiencia 2n * log(n) que pertenece al orden O(n * log(n)).
-
-**De la función insertar en pos**
-
-Cuando se hace la llamada recursiva lo hacemos con la posición pos, que ha sido dividida entre dos pues depende de la altura del árbol que en el peor de los casos será n/2. Además le sumamos una eficiencia constante pues se hacen comparaciones y asignaciones las cuales son de orden 1.
-Esto nos da que tiene una eficiencia de orden log(n).
-
-**De la función reestructurar raíz**
-
-Para reeestructurarRaiz tenemos lo mismo, pero la posición en vez de empezar en un número alto comienza en el más bajo y se va multiplicando por 2, es por eso que la llamada recursiva que se hace tendrá un tamaño de n/2, ya que también depende de la altura del árbol que en el peor de los casos será de n/2. Al igual que en insertarPos le añadimos un orden constante por las comparaciones y asignaciones que se hacen, que son de orden constante.
-Esto nos da que tiene una eficiencia de orden log(n).
-
-\newpage
-
-## Pregunta 2. *Comparación de la eficiencia del algoritmo HeapSort con el algoritmo MergeSort.*
-
-### *Algoritmo MergeSort*
-
-Para la ejecución del algoritmo con el algoritmo *MergeSort* tenemos la siguiente tabla:
-
-| N     | T(N) | K             | TE(N)       |
-| ----- | ---- | ------------- | ----------- |
-| 2000  | 159  | 0,02408339218 | 148,1201142 |
-| 4000  | 317  | 0,02200129931 | 323,2551887 |
-| 8000  | 660  | 0,02113709914 | 700,5402982 |
-| 16000 | 1415 | 0,02103591248 | 1509,140438 |
-| 32000 | 2960 | 0,02053205785 | 3234,40056  |
-| 64000 | 7943 | 0,02582287298 | 6901,040486 |
-
-Con un promedio de las constantes de: **0,02243543899**
 
 El gráfico sería el siguiente:
 
-![Gráfico de comparación de tiempos teóricos y prácticos para MergeSort](./img/graficomergesort.png "Gráfico de comparación de tiempos teóricos y prácticos para MergeSort")
-
-\newpage
-
-### *Algoritmo HeapSort*
-
-Para la ejecución del algoritmo con el algoritmo *HeapSort* tenemos la siguiente tabla:
-
-| N     | T(N) | K             | TE(N)       |
-| ----- | ---- | ------------- | ----------- |
-| 2000  | 93   | 0,01408651241 | 84,93027136 |
-| 4000  | 169  | 0,01172939932 | 185,3505923 |
-| 8000  | 377  | 0,01207376723 | 401,6812839 |
-| 16000 | 798  | 0,01186336266 | 865,3227664 |
-| 32000 | 1826 | 0,01266606001 | 1854,56593  |
-| 64000 | 4542 | 0,01476614492 | 3956,972653 |
-
-Con un promedio de las constantes de: **0,01286420776**
-
-El gráfico sería el siguiente:
-
-![Gráfico de comparación de tiempos teóricos y prácticos para HeapSort](./img/graficoheapsort.png "Gráfico de comparación de tiempos teóricos y prácticos para HeapSort")
-
-
-### *Análisis del algoritmo de HeapSort vs MergeSort*
-
-Los algoritmos tienen una eficiencia asintótica similar, es decir que tienen una complejidad de peor caso O(n log n), sin embargo hay diferencias vitales en los códigos que permiten elegir un código o otro. Si nos preocupa la memoria, el algoritmo HeapSort es el mejor ya que no hace una copia de los datos fuera del vector o la estructura de datos original generalmente un array, generando un estrés adicional sobre accesos a memoria y copia de datos. Generando un proceso de copia adicional de O(n).
-
-Si nos preocupa la estabilidad, es decir que se mantenga un orden relativo de los elementos dentro del heap que crea el algoritmo. MergeSort no es estable cuando la ordenación depende de más de un parámetro o variable. Por lo que puede dar a ordenaciones incorrectas aunque aparentemente esté ordenado.
+![Gráfico de comparación de los distintos algoritmos.](./img/comparacion.png "Gráfico de comparación de los distintos algoritmos.")

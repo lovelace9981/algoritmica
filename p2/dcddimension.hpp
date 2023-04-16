@@ -123,12 +123,11 @@ public:
         if (conjunto2.size() > 1)
             conjunto2 = no_dominados_recursive(conjunto2, (coordenada + 1) % K_DIMENSION);
 
-        set<vector<T>> resultado;
-        // Combinamos los dos conjuntos en uno solo dejando solo los no dominados
-        resultado = combinar(conjunto1, conjunto2);
+        // Combinamos los dos conjuntos en uno solo (el de la izquierda) dejando solo los no dominados
+        combinar(conjunto1, conjunto2);
 
         // Devolvemos la lista resultante
-        return resultado;
+        return conjunto1;
     }
 
     bool primera_condicion(const vector<T> i, const vector<T> &j)
@@ -161,27 +160,22 @@ public:
         return primera_condicion(i, j) && segunda_condicion(i, j);
     }
 
-    set<vector<T>> combinar(set<vector<T>> conjunto1, set<vector<T>> conjunto2)
+    void combinar(set<vector<T>>& conjunto1, set<vector<T>>& conjunto2)
     {
-        set<vector<T>> resultado;
         bool no_dominado = false;
 
-        // Metemos en resultado el conjunto 1
-        for (auto const &punto : conjunto1)
-            resultado.insert(punto);
-
-        // Comparamos todos los de conjunto2 con los de el resultado
+        // Comparamos todos los de conjunto2 con los de el conjunto1
         for (auto const &punto : conjunto2)
         {
             no_dominado = true;
 
-            typename set<vector<T>>::iterator it = resultado.begin();
-            while (it != resultado.end())
+            typename set<vector<T>>::iterator it = conjunto1.begin();
+            while (it != conjunto1.end())
             {
                 if (domina(punto, *it))
                 {
-                    // El punto domina al de resultado, lo borramos y continuamos para comprobar si domina a otro o es dominado
-                    it = resultado.erase(it);
+                    // El punto domina al de conjunto1, lo borramos y continuamos para comprobar si domina a otro o es dominado
+                    it = conjunto1.erase(it);
                 }
                 else if (domina(*it, punto))
                 {
@@ -195,10 +189,8 @@ public:
                 }
             }
             if(no_dominado)
-                resultado.insert(punto);
+                conjunto1.insert(punto);
         }
-
-        return resultado;
     }
 
     void puntos_no_dominados()

@@ -37,10 +37,11 @@ rundebug: debug
 
 
 docs:
+# PACKAGE REQUIRED pandoc  texlive-latex-base
 	@echo "Making docs, you need pandoc package"
 	pandoc -s -V geometry:margin=1in -o documentation.pdf documentation.md
 
 clean:
 	@echo "Cleaning all the files.."
 	-rm *.bin
-	-rm *.txt
+	-rm ./output/*.txt

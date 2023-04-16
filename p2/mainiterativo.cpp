@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 
 	for (int i = 4 ; i < argc; i++){
 		tamanio_caso = atoi(argv[i]);
-        // no_dominados_ptr = new DCD<int>(k_dimension, tamanio_caso);
+        // no_dominados_ptr = new non_dominated_iterative<int>(k_dimension, tamanio_caso);
 		//Escribimos los nombres de las columnas del output
 
 		// Inicializamos generador de no. aleatorios
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
 		no_dominados_ptr = new non_dominated_iterative<int>(k_dimension, tamanio_caso, 100);
 		cerr << "Ejecutando algoritmo iterativo para tam " << tamanio_caso << endl ;
 
-		t0= std::chrono::high_resolution_clock::now(); // Cogemos el tiempo en que comienza la ejecuciÛn del algoritmo
+		t0= std::chrono::high_resolution_clock::now(); // Cogemos el tiempo en que comienza la ejecución del algoritmo
 		//Ejecutamos algoritmo iterativo
 		no_dominados_ptr -> gen_non_dominated();
 		tf= std::chrono::high_resolution_clock::now(); // Cogemos el tiempo en que finaliza la ejecuciÛn del algoritmo

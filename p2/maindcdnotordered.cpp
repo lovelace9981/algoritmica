@@ -62,6 +62,7 @@ int main(int argc, char *argv[]){
 		fsalida<< tamanio_caso<<" "<<tejecucion<<"\n";
 
 		// #ifdef DEBUG_PARAMS_PRINT
+		// cout << tamanio_caso << endl ;
 		// 	no_dominados_ptr -> print_problem();
 		// #endif
 

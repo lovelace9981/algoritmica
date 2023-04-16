@@ -38,8 +38,7 @@ int main(int argc, char *argv[]){
 
 	for (int i = 4 ; i < argc; i++){
 		tamanio_caso = atoi(argv[i]);
-        // no_dominados_ptr = new DCD<int>(k_dimension, tamanio_caso);
-		//Escribimos los nombres de las columnas del output
+        // no_dominados_ptr = new DCDDIMENSION<int>(k_dimension, tamanio_caso);
 
 		// Inicializamos generador de no. aleatorios
 		semilla= atoi(argv[2]);
