@@ -142,6 +142,15 @@ class DCD {
 
 
     public:
+        DCD(const int k, const int n): K_DIMENSION(k), N_COMPONENTES(n), MAX_NUMBER(10){
+            vector<vector<T>> matrix {
+                {1,2,3}, {2,3,4}, {10,5,3},
+                {3,7,0}, {0,0,0}, {1,6,7},
+                {5,6,3}, {8,3,1}, {1,3,5}};
+
+            componentes=matrix;
+        }
+
         /*
          * k - DIMENSION DE LOS PUNTOS
          * n - tamanio del problema

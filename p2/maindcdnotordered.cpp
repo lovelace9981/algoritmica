@@ -37,8 +37,8 @@ int main(int argc, char *argv[]){
 	for (int i = 0; i < n_problemas; i++){
 		tamanio_caso = atoi(argv[i+3]);
 		// CREAMOS clase de no_dominados, punto maximo 10
-		no_dominados_ptr = new DCD<int>(k_dimension, tamanio_caso, 10);
-
+		// no_dominados_ptr = new DCD<int>(k_dimension, tamanio_caso, 10);
+        no_dominados_ptr = new DCD<int>(k_dimension, tamanio_caso);
 		//Escribimos los nombres de las columnas del output
 		fsalida << "n " << "T(n) " << "K " << "TE(n)\n" ;
 
