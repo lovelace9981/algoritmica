@@ -4,76 +4,142 @@
 #include <cstdlib>
 #include <ctime>
 
+using namespace std;
+
 template <class T>
 class DCD {
     private: 
         vector<vector<T>> componentes;
         vector<vector<T>> no_dominados;
-        static int K_DIMENSION;
-        static int N_COMPONENTES;
-        static int MAX_NUMBER;
+
+        const int K_DIMENSION;
+        const int N_COMPONENTES;
+        const int MAX_NUMBER;
         const int MIN_NUMBER = 0;
 
-        // Metodo privado de generador.
-        void gen_numbers(){
+        /**
+         *  Generador de puntos aleatorio.
+         *  Usa los atributos internos para generar los puntos
+         */
+        void gen_numbers()
+        {
             // INIT RAND
-            srand(TIME(NULL));
-            vector<vector<T>> componente_actual;
+            srand(time(NULL));
+            vector<T> componente_actual;
             T actual_rand_number;
 
-            for (int i = 0; i < N_COMPONENTES; i++){
-                for (int j = 0; j < K_DIMENSION; j++){
-                    actual_rand_number = MIN_NUMBER + (rand() % (MAX_NUMBER - MIN_NUMBER + 1 ));
+            for (int i = 0; i < N_COMPONENTES; i++)
+            {
+                for (int j = 0; j < K_DIMENSION; j++)
+                {
+                    actual_rand_number = MIN_NUMBER + (rand() % (MAX_NUMBER - MIN_NUMBER + 1));
                     componente_actual.push_back(actual_rand_number);
                 }
 
+                #ifdef DEBUG_PARAMS_GENERATOR
+                cout << "Componente *DEBUG_PARAMS_GENERATOR* " << i << endl;
+                for (int d = 0; d < K_DIMENSION; d++)
+                {
+                    cout << componente_actual[i] << " ";
+                }
+
+                cout << endl;
+                #endif
                 componentes.push_back(componente_actual);
                 componente_actual.clear();
             }
-            // FREEING MEMORY
-            componente_actual.clear();
         }
 
             
-        bool check_no_dominado(vector<T> & componente_A, vector<T> & componente_B){
-            bool no_dominado = false;
-            // Comparamos cada punto con la primera condicion
-            if (componente_A >= componente_B){
-                // Comprobamos la segunda condicion
-                for (int a = 0; a < K_DIMENSION; a++){
-                    if (componentes[i][a] > componentes[j][a]){
-                        // UN PUNTO NO DOMINADO EN UNA COORDENADA
-                        no_dominado = true;
-                        break;
-                    }
+        // He puesto menor que, porque es posible que termine antes si encuentra un numbero muy pequeño
+        // Pero eso no evita problemas como el 0,9
+        bool primera_condicion(const vector<T> i, const vector<T>& j){
+            for (int k = 0; k < K_DIMENSION; ++k){
+                if (i[k] < j[k]){
+                    return false;
                 }
             }
+            // Es >=
+            return true;
+        }
 
-            return no_dominado;
+            
+        bool segunda_condicion (const vector<T> i, const vector<T>& j){
+            for (int k = 0; k < K_DIMENSION; ++k){
+                if (i[k] > j[k]){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool domina (const vector<T>& i, const vector<T>& j){
+            return primera_condicion(i,j) && segunda_condicion(i,j);
         }
 
         /**
           * Quitamos los puntos que sean dominados en esta "MITAD"
           */
         vector<vector<T>> prune_points(vector<vector<T>> & points){
-            bool no_dominado = false;
-            vector<vector<T>> points_no_dominados;        
+            // El elemento es no dominado, hasta que encontremos a alguno que lo domine
+            bool no_dominado = true;
+            vector<vector<T>> point_no_dominados;
+            // Metemos el primer elemento en no dominados
+            point_no_dominados.push_back(points[0]);
+            // Iteradores
+            typename vector<vector<T>>::iterator it_componentes = points.begin() + 1;
+            typename vector<vector<T>>::iterator it_no_dominados = point_no_dominados.begin();
+            // Comprobamos todos los elementos con el array de no dominados,
+            // si encontramos que el elemento siendo comparado domina a alguno que está ya en los no dominados,
+            // sacamos de no dominados ese elemento y metemos el nuevo
+            // Si el elemento siendo comparado es dominado por algún no dominado, hacemos un break
+            while(it_componentes != points.end()){
+                no_dominado = true;
+                // Refrescamos el iterador - CAUSA Del seg fault ya que el iterador anterior estaba fuera de rango.
+                it_no_dominados = point_no_dominados.begin();
 
-            for (int i = 0; i < points.size()-1; i++){
-                for (int j = i + 1; j < points.size(); j++){
-                    if(check_no_dominado(points[i], points[j])){
-                        no_dominado = true;
-                        break;
+                while(it_no_dominados != point_no_dominados.end()){
+                    // Comprobamos si el elemento que estamos comparando domina al supuesto no dominado
+                    // En este caso el comparado domina al no dominado.
+                    if (domina((*it_componentes), (*it_no_dominados))) {
+                        it_no_dominados = point_no_dominados.erase(it_no_dominados);
+                    }
+                    // Comprobamos si el elemento que estamos comparando es dominado por el supuesto no dominado
+                    // En este caso el no dominado domina al comparado.
+                    else if (domina((*it_no_dominados), (*it_componentes))){
+                        no_dominado = false;
+                        ++it_no_dominados;
+                    }
+                    // En este caso ninguno de los dos domina al otro, por lo que continuamos sin má.
+                    else{
+                        ++it_no_dominados;
                     }
                 }
-
+                
+                // Insertamos nuevo no dominado.
                 if (no_dominado){
-                    points_no_dominados.push_back(points[i]);
+                    point_no_dominados.push_back(*it_componentes);
                 }
+
+                // Incrementamos iterador de los componentes
+                ++it_componentes;
             }
 
-            return points_no_dominados;
+            #ifdef DEBUG_PARAMS_ALGORITHM
+                for (int d = 0; d < point_no_dominados.size(); d++){
+                    cout << "Componente *DEBUG_PARAMS_ALGORITHM* " << d << endl;
+                    for (int dj = 0; dj < point_no_dominados[d].size(); dj++){
+                            cout << point_no_dominados[d][dj] << " ";
+                        }
+                    }
+
+                    cout << endl;
+            #endif
+
+            return point_no_dominados;
         }
+
+
 
     public:
         /*
@@ -81,46 +147,70 @@ class DCD {
          * n - tamanio del problema
          * max_number - numero maximo de la semilla de SRAND, que empieza desde 0.
          */
-        DCD(const int k, const int n, const int max_number){
-            K_DIMENSION = k;
-            N_COMPONENTES = n;
-            MAX_NUMBER = max_number;
-
+        DCD(const int k, const int n, const int max_number): K_DIMENSION(k), N_COMPONENTES(n), MAX_NUMBER(max_number){
             gen_numbers();
-            no_dominados = divandconqDCD(this->componentes);
         }
 
         ~DCD(){
             componentes.clear();
-            no_dominados.clear();
         }
 
-        vector<vector<T>> divandconqDCD(vector<vector<T>> puntos){
+        vector<vector<T>> divandconqDCD(vector<vector<T>> & puntos){
             // CASO BASE
-            if (componentes.size() == 0)
+            if (puntos.size() == 1){
                 return puntos;
-            
+            }
+                
             // SUBPROBLEMAS DIVISION DE LOS COMPONENTES POR LA MITAD
             // PRIMERA MITAD
-            vector<vector<T>>::iterator start_half_1 = puntos.begin();
-            vector<vector<T>>::iterator end_half_1 = (puntos.begin() + (puntos.size() / 2));
+            typename vector<vector<T>>::iterator start_half_1 = puntos.begin();
+            typename vector<vector<T>>::iterator end_half_1 = (puntos.begin() + (puntos.size() / 2));
             // SEGUNDA MITAD - RECORDAR QUE LOS ITERADORES NO COPIAN LOS END, INTERVALO ABIERTO [0, MITAD), [MITAD, END)
-            vector<vector<T>>::iterator start_half_2 = end_half_1;
-            vector<vector<T>>::iterator end_half_2 = puntos.end();
-            // COPING ELEMENTS
+            typename vector<vector<T>>::iterator start_half_2 = end_half_1;
+            typename vector<vector<T>>::iterator end_half_2 = puntos.end();
+            // COPIYING ELEMENTS
             vector<vector<T>> left(start_half_1, end_half_1);
             vector<vector<T>> right(start_half_2, end_half_2);
-            // PRUNE
-            left = prune_points(left);
-            right = prune_points(right);
             // RECURSIVE CALL
             left = divandconqDCD(left);
             right = divandconqDCD(right);
             // MERGE RESULTS on LEFT
-            left.insert(left.end(), right.begin(), right.end());
+            left.insert(left.end(), right.begin(), right.end());\
             right.clear(); // LIBERAMOS MEMORIA
             // AL HACER EL MERGE EVALUAMOS DE NUEVO LOS SUBPROBLEMAS UNIDOS Y RETORNAMOS LOS NO_DOMINADOS MEZCLADOS
             return prune_points(left);
         }
-        
+
+        void divandconqCall(){
+            no_dominados = divandconqDCD(componentes);
+        }
+
+        /**
+         * @brief Method for printing the problem and the result
+         * @pre Requires preexecution of gen_non_dominated
+         */
+        void print_problem() {
+            if (no_dominados.size() == 0){
+                cerr << "No se ha ejecutado el método gen_non_dominated " << endl;
+            }
+            else{
+                cout << "All problem: " << endl;
+                for (int i = 0; i < componentes.size(); i++){
+                    cout << "Componente: " << " ";
+                    for (int j = 0; j < K_DIMENSION; j++){
+                        cout << " " << componentes[i][j] << " ";
+                    }
+                    cout << endl;
+                }
+
+                cout << "No dominados: " << endl;
+                for (int i = 0; i < no_dominados.size(); i++){
+                    cout << "Componente: " << " ";
+                    for (int j = 0; j < K_DIMENSION; j++){
+                        cout << " " << no_dominados[i][j] << " ";
+                    }
+                    cout << endl;
+                }
+            }
+        }
 };

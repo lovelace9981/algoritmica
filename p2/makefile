@@ -11,8 +11,7 @@ iterativos:
 
 dcd:
 	@echo "Compiling divide and conquer algorithms.."
-	g++ -O2 --std=c++11 maindcdordered.cpp -o dcdoredered.bin
-	g++ -O2 --std=c++11 maindcdnotoredered.cpp -o dcdnotordered.bin
+	g++ -O2 --std=c++11 maindcdnotordered.cpp -o dcdnotordered.bin
 	@echo "End compiling sorting algorithms.."
 dimension:
 	@echo "Compiling dimension problem.."
