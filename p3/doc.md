@@ -4,13 +4,13 @@
   - [X] Una función para eliminar una arista (conexión con nodo adyacente).
   - [X] Función que devuelve el número de aristas incidentes (usada para la heurística)
   - [X] Función toString
-- [ ] Hacer array de nodos (Grafo) en el main
-- [ ] Lectura de un grafo desde un archivo
-  - [ ] Especificar un formato de grafo en archivo de texto
+- [X] Hacer array de nodos (Grafo) en el main
+- [X] Lectura de un grafo desde un archivo
+  - [X] Especificar un formato de grafo en archivo de texto
 - [ ] Hacer main, recibe como argumento el nombre de un archivo con un grafo y devuelve el camino de Euler.
-  - [ ] Leer de fichero
+  - [X] Leer de fichero
   - [ ] Comprobar precondiciones y mostrarlo
-  - [ ] Realizar algoritmo
+  - [X] Realizar algoritmo
 
 # HEURÍSTICA
 Como heurística tomamos el número de aristas incidentes que tiene el nodo, por eso se especifica la función para obtener el número de aristas que inciden en el nodo.
