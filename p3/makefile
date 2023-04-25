@@ -1,3 +1,3 @@
 run: 
-	echo "Compiling main.cpp"
+	@echo "Compiling main.cpp"
 	g++ -o programa.bin main.cpp nodo.cpp

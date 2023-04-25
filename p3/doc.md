@@ -12,6 +12,8 @@
   - [ ] Comprobar precondiciones y mostrarlo
   - [ ] Realizar algoritmo
 
+# HEURÍSTICA
+Como heurística tomamos el número de aristas incidentes que tiene el nodo, por eso se especifica la función para obtener el número de aristas que inciden en el nodo.
 # PRECONDICIONES
 - El grafo es conexo, es decir, todos los vértices están conectados
 - Todos los vértices tienen un número de aristas par.
