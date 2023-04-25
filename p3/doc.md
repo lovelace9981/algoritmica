@@ -21,3 +21,9 @@ Como heurística tomamos el número de aristas incidentes que tiene el nodo, por
 Éstas precondiciones se da por hecho que ya se cumplen al dar un input de un grafo, pero para hacer el programa más completo se sugiere comprobarlo antes de ejecutar el algoritmo y mostrar en consola que está todo correcto.
 
 # FORMATO DE ARCHIVO .GRAPH
+
+- Primera línea del archivo contiene el número de nodos que tiene el grafo
+- Siguientes líneas contienen:
+  - El primer número es el número de aristas que contiene el nodo
+  - Los siguientes números son las aristas que tiene.
+

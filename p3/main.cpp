@@ -2,38 +2,48 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include <fstream>
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    // if(argc < 2){
-    //     cerr << "Error: No se ha especificado el fichero que contiene el grafo" << endl;
-    //     return 1;
-    // }
-    // Creamos un grafo de ejemplo, conexo y que tiene un número par de aristas
-    // Lista para ir guardando el camino que se toma
-    list<int> camino;
-    // Vector grafo
-    vector<Nodo> grafo;
-    grafo.push_back(Nodo(0));
-    grafo.push_back(Nodo(1));
-    grafo.push_back(Nodo(2));
-    grafo.push_back(Nodo(3));
-    grafo.push_back(Nodo(4));
-    
-    // Añadimos las aristas
-    for (int i = 0; i < grafo.size(); i++)
-    {
-        grafo[i].addArista((i + 1) % grafo.size());
-        grafo[i].addArista((i + 2) % grafo.size());
+    if(argc < 2){
+        cerr << "Error: No se ha especificado el fichero que contiene el grafo" << endl;
+        return 1;
     }
-    grafo[grafo.size() - 1].addArista(3);
-    grafo[grafo.size() - 1].addArista(2);
+
+    // Abrimos el fichero
+    ifstream file;
+    file.open(argv[1]);
+    if(!file.is_open()){
+        cerr << "Error: No se ha podido abrir el fichero" << endl;
+        return 1;
+    }
+    // Leemos el número de nodos
+    int numNodos;
+    file >> numNodos;
+    // Creamos el vector de nodos (grafo)
+    vector<Nodo> grafo = vector<Nodo>(numNodos);
+    for (int i = 0; i < numNodos; i++)
+    {
+        grafo[i].setNum(i);
+        int numAristas;
+        file >> numAristas;
+        for (int j = 0; j < numAristas; j++)
+        {
+            int arista;
+            file >> arista;
+            grafo[i].addArista(arista);
+        }
+    }
 
     // Imprimimos el grafo
     for(auto nodo : grafo){
         cout << nodo.toString() ;
     }
+
+    // Lista para ir guardando el camino que se toma
+    list<int> camino;
 
     // Empezamos en el nodo 0
     int nodoActual = 0;
@@ -45,6 +55,8 @@ int main(int argc, char const *argv[])
                 nodoSiguiente = grafo[nodoActual].getArista(i);
             }
         }
+        cout << "Nodo actual: " << nodoActual << " Aristas: " << grafo[nodoActual].getAristas() << endl;
+        
         // Añadimos el nodo actual al camino
         camino.push_back(nodoActual);
         // Eliminamos la arista del nodo actual y del nodo siguiente
@@ -52,13 +64,21 @@ int main(int argc, char const *argv[])
         grafo[nodoSiguiente].deleteArista(nodoActual);
         // Actualizamos el nodo actual
         nodoActual = nodoSiguiente;
+        cout << "Nodo siguiente: " << nodoActual << " Aristas: " << grafo[nodoActual].getAristas() << endl;
     }
+    // Añadimos el último nodo al camino
+    camino.push_back(nodoActual);
 
     // Imprimimos el camino
     for(auto nodo : camino){
         cout << nodo << " ";
     }
     cout << endl;
+
+    // Imprimimos el grafo
+    for(auto nodo : grafo){
+        cout << nodo.toString() ;
+    }
 
     return 0;
 }
