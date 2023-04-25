@@ -1,5 +1,10 @@
 #include "nodo.hpp"
 
+Nodo::Nodo()
+{
+    aristas = list<int>();
+}
+
 Nodo::Nodo(int numAristas)
 {
     aristas = list<int>(numAristas);
@@ -10,7 +15,7 @@ Nodo::~Nodo()
     aristas.clear();
 }
 
-int Nodo::getAristas()
+int Nodo::getAristas() const
 {
     return aristas.size();
 }
