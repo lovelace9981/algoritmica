@@ -26,8 +26,12 @@ void Euler::evalIfEulerPath(){
     #endif
 
     if (odd == 0){
-        cerr << "The graph have 0 odd vertex" << endl;
-        terminate();
+        // cerr << "The graph have 0 odd vertex" << endl;
+        // terminate();
+        // Escogemos cualquier punto
+        oddEulerVertex.push_back(0);
+        srand(time(NULL)); // Semilla
+        oddEulerVertex.push_back(rand()%nodes);
     }
     else if (odd == 1){
         cerr << "The graph have only one odd vertex" << endl;
@@ -39,7 +43,6 @@ void Euler::evalIfEulerPath(){
     }
 
 }
-
 
 void Euler::storeEulerDegree(const int vertex){
     int degree = 0;
@@ -201,8 +204,12 @@ void Euler::greedyEulerAdjacencyMatrix(){
     int actualVertex = 0;
     int finalVertex = 0;
     int nextVertex = 0;
+    // For take a vertex if all are dead end
+    int firstVertexDeadEnd = -1; 
+    int vertexWithNextDeadEnd = -1;
 
     bool end = false;
+    bool next_not_dead_end = false;
 
     // La matriz de adyacencia es el mismo
     if (nodes == 1){
@@ -219,50 +226,104 @@ void Euler::greedyEulerAdjacencyMatrix(){
             // After insert into the path, clear the two 1 of adjacency matrix, that 1 means a edge
             while(!end){
                 if (tempdegreeEulerVertex[actualVertex] > 0){
-                    // Get the first next point
-                    for (int i = 0; i < nodes; i++){
-                        if (tempadjacency[actualVertex][i] == 1){
-                            nextVertex = i;
-                            #ifdef DEBUGEULER
-                            cout << "A" << actualVertex << endl;
-                            cout << "N" << nextVertex << endl;
-                            cout << "ADJACENCY MATRIX " << endl;
-                            cout << "---------------------------------" << endl;
-                            for (int i = 0; i<tempadjacency.size(); i++){
-                                for (int j = 0; j<tempadjacency[i].size();j++)
-                                    cout << tempadjacency[i][j] << " ";
-                                
-                                cout << endl;
+                    // Search vertex not dead end
+                    while (nextVertex < nodes){
+                        // Dead end
+                        if (tempadjacency[actualVertex][nextVertex] == 1 && tempdegreeEulerVertex[nextVertex] == 1 && firstVertexDeadEnd == -1){
+                                cout << "DEAD END " << nextVertex << endl;
+                                firstVertexDeadEnd = nextVertex; // Adquire the first vertex if all are dead end
+                        }
+                        else if (tempadjacency[actualVertex][nextVertex] == 1 && tempdegreeEulerVertex[nextVertex] > 1){
+                            cout << "ENTRA GRADE > 1" << " NEXT " << nextVertex <<  endl;
+                            // Check if this vertex don't drive to a dead end
+                            if (tempdegreeEulerVertex[nextVertex] == 2){
+                                cout << "ENTRA GRADE 2" << endl;
+                                for (int i = 0; i < nodes; i++){
+                                   if (i != actualVertex && tempadjacency[nextVertex][i] == 1 && tempdegreeEulerVertex[i] == 1 && vertexWithNextDeadEnd == -1){
+                                        // Posible nextDeadEnd, because degree are 1, and this are vertex with one paths
+                                        vertexWithNextDeadEnd = nextVertex;
+                                   }
+                                   else if (i != actualVertex && tempadjacency[nextVertex][i] == 1 && tempdegreeEulerVertex[i] > 1){
+                                        next_not_dead_end = true; // Condicion de salida para el bucle grande
+                                        // Encontramos que hay un siguiente camino multiple este vertex vale
+                                        break;
+                                   }
+                                }
                             }
-                            #endif
-
-                            // Delete the adjacency points
-                            tempadjacency[nextVertex][actualVertex] = 0;
-                            tempadjacency[actualVertex][nextVertex] = 0;
-
-                            #ifdef DEBUGEULER
-                            cout << "NEW ADJACENCY MATRIX " << endl;
-                            cout << "---------------------------------" << endl;
-                            for (int i = 0; i<tempadjacency.size(); i++){
-                                for (int j = 0; j<tempadjacency[i].size();j++)
-                                    cout << tempadjacency[i][j] << " ";
-                                
-                                cout << endl;
+                            else if (tempdegreeEulerVertex[nextVertex] >= 2){
+                                break;
                             }
-                            #endif
 
-                            // Reducimos el grado
-                            tempdegreeEulerVertex[actualVertex]--;
-                            tempdegreeEulerVertex[nextVertex]--;
-                            
+                            // // Break if not a next dead end
+                            if (next_not_dead_end){
+                                next_not_dead_end = false;
+                                break;
+                            }
+                        } // Not dead end
 
-                            actualVertex = nextVertex;
-
-                            actualEulerPath.push_back(actualVertex);
-
+                        // Last Vertex and eval if have dead end
+                        if (nextVertex == nodes - 1){
+                            if (vertexWithNextDeadEnd != -1){
+                                nextVertex = vertexWithNextDeadEnd;
+                            }
+                            else if (firstVertexDeadEnd != -1){
+                                nextVertex = firstVertexDeadEnd;
+                            }
                             break;
                         }
+                        
+                        nextVertex++;
                     }
+
+                    if (tempadjacency[actualVertex][nextVertex] == 1){
+                        #ifdef DEBUGEULER
+                        cout << "A" << actualVertex << endl;
+                        cout << "N" << nextVertex << endl;
+                        cout << "ADJACENCY MATRIX " << endl;
+                        cout << "---------------------------------" << endl;
+                        for (int i = 0; i<tempadjacency.size(); i++){
+                            for (int j = 0; j<tempadjacency[i].size();j++)
+                                cout << tempadjacency[i][j] << " ";
+                            
+                            cout << endl;
+                        }
+                        #endif
+
+                        // Delete the adjacency points
+                        tempadjacency[nextVertex][actualVertex] = 0;
+                        tempadjacency[actualVertex][nextVertex] = 0;
+
+                        #ifdef DEBUGEULER
+                        cout << "NEW ADJACENCY MATRIX " << endl;
+                        cout << "---------------------------------" << endl;
+                        for (int i = 0; i<tempadjacency.size(); i++){
+                            for (int j = 0; j<tempadjacency[i].size();j++)
+                                cout << tempadjacency[i][j] << " ";
+                            
+                            cout << endl;
+                        }
+                        #endif
+
+                        // Reducimos el grado
+                        tempdegreeEulerVertex[actualVertex]--;
+                        tempdegreeEulerVertex[nextVertex]--;
+
+                        #ifdef DEBUGEULER
+                        cout << "NEW DEGREE VECTOR" << endl;
+                        cout << "---------------------------------" << endl;
+                        for (int i = 0; i<tempdegreeEulerVertex.size(); i++){
+                            cout << tempdegreeEulerVertex[i] << " ";
+                        }
+                        cout << endl;
+                        #endif
+
+                        actualVertex = nextVertex;
+                        nextVertex = 0;
+                        firstVertexDeadEnd = -1;
+                        vertexWithNextDeadEnd = -1;
+
+                        actualEulerPath.push_back(actualVertex);
+                    }                    
                 }
                 else {
                     // Como el grafo es un camino donde los vertices se visitan una unica vez, cuando uno de los actuales termine por quedarse sin grado, es que ha terminad

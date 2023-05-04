@@ -4,6 +4,8 @@
 #include <string>
 #include <cctype>
 #include <exception>
+// RANDOM
+#include <cstdlib>
 
 using namespace std;
 
