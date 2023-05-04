@@ -2,4 +2,6 @@
 *.bin
 *.csv
 *.zip
+*.json
 ./*/*.bin
+.vscode/
