@@ -1,0 +1,123 @@
+\input{preambulo.tex}
+
+%----------------------------------------------------------------------------------------
+%	TÍTULO Y DATOS DEL ALUMNO
+%----------------------------------------------------------------------------------------
+\graphicspath{ {img/} }
+
+\title{
+\normalfont \normalsize
+\includegraphics[width=6cm,height=6cm]{logo}\\
+\textsc{\textbf{Asignatura (2021-2022)} \\ Grado en Ingeniería Informática \\ Universidad de Granada} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge Memoria Práctica 3 \\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+%https://es.overleaf.com/learn/latex/Inserting_Images
+%Ruta relativa de   imagenes
+
+\author{Pedro Antonio Mayorgas Parejo  \\  Alejandro Ramos Peña} % Nombre y apellidos
+
+\date{\normalsize\today} % Incluye la fecha actual
+
+%----------------------------------------------------------------------------------------
+% DOCUMENTO
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Muestra el Título
+
+\newpage %inserta un salto de página
+
+\tableofcontents % para generar el índice de contenidos
+
+\newpage
+
+%----------------------------------------------------------------------------------------
+%	Cuestión 1
+%----------------------------------------------------------------------------------------
+
+\section{Descripción del algoritmo Greedy con heurística basada en la matriz de adyacencia}
+
+El algoritmo está encapsulado en una clase, debido a las enormes necesidades de heurística del algoritmo greedy.
+
+La heurística de este algoritmo es basada en la matriz de adyacencia, donde la matriz de adyacencia nos proporciona información sobre las aristas de los vértices (o nodos) del grafo, a partir de la entrada de la matríz de adyacencia construimos la siguiente información:
+
+\begin{itemize}
+    \item Obtenemos los grados de cada vértice del grafo. Por grado, es la cantidad de aristas que tiene, contabilizadas mediante, la matriz.
+    \item Obtenemos los puntos iniciales, si en la matriz hay dos vértices con grado impar, se debe empezar en uno de los dos y acabar en el otro punto.
+    \item Del fichero de entrada obtenemos el número de nodos.
+\end{itemize}
+
+Una vez obtenida toda la heurísitca ejecutamos el método\textbf{fleuryAlgorithm}, el algoritmo se ejecuta en base a lo siguiente:
+
+\textbf{El algoritmo está preparado para obtener todas las posibles rutas desde todos los vértices.} 
+
+Se hace una copia de la matriz de adyacencia original y de los grados de los vértices, para no perder la información de la adyacencia durante las distintas búsquedas de rutas.
+
+Pero debido a los limitados requisitos de la práctica solo se hará desde un punto, que se limita en la función de evalIfEulerPath, en dicha función se ha preparado que cuando los nodos sean pares, se introduzca un par aleatorio a partir del atributo de instancia del número de nodos.
+
+\begin{enumerate}
+    \item Si la matriz tiene un solo nodo, se introduce el nodo y se termina la función.
+    \item Si la matriz tiene mas de un nodo, el algoritmo obtiene el nodo de partida (este ha sido obtenido previamente en evalIfEulerPath) y lo almacena en una variable temporal que indexa el vértice en el que está evaluando el siguiente al que debe saltar.
+    \item Se introduce el nodo inicial en el eulerPath, para almacenar el nodo de partida.
+    \item Evalúa si el nodo actual tiene un grado mayor que 0, si no lo tiene se termina el bucle y la función. 
+    \item En caso de tener un grado mayor de 0, pasamos a recorrer su matriz de adyacencia, evaluando las siguientes condiciones básicas en todos los requisitos.
+    \begin{itemize}
+        \item El siguiente vértice, debe tener una arista, esto es que en la matriz de adyacencia vale 1. Una vez evaluado esto, debemos evaluar las siguientes subcondiciones.
+        \begin{itemize}
+            \item Si el siguiente vértice tiene una arista y un grado igual a 1, se almacena como el posible Dead end. A continuacuón evaluamos los siguientes puntos.
+            \item Si el siguiente vértice tiene una arista y un grado mayor que 1, evaluamos a continuación si este tiene un grado 2, para evaluar que no conduzca a otro posible Dead end, esto es que cuando saltemos al siguiente vértice y construyamos el siguiente camino. Que su siguiente salto a su vez no tenga grado 1, esto es evitando vértices que en el grafo no tienen salida y dejen sin evaluar el resto de vértices. Si este punto conduce a un DeadEnd se almacena también como posible salto y pasamos a evaluar al resto de vértices. 
+            
+            En caso contrario, si el siguiente vértice tiene un grado mayor que 1, lo escogemos directamente como salto válido.
+            \item Si el siguiente vértice tiene un grado mayor que 2, es un vértice bueno y lo seleccionamos directamente como siguiente salto.
+        \end{itemize}
+
+        \item Si se ha cumplido con una subcondición de dead end y hemos evaluado todos los posibles vértices. Comprobamos cuál tipo de dead end es, si es un dead end de dos saltos esto es que el siguiente vértice tiene otro siguiente vértice que conduce a un final del grafo, escogemos ese en primer lugar para construir el camino. Si no hay uno de dos saltos, se escoge como siguiente el vértice que conduce a un final.
+    \end{itemize}
+\end{enumerate}
+
+Una vez completada la evaluación, con ese vértice de salto, pasamos a modificar la matriz para notificar que el salto se ha realizado, además se decrementa el grado de dicho vértice, para que en las próximas evaluaciones se escoja el mejor camino posible.
+
+Finalmente se marca como vértice actual el del salto, se reinician las variables de lo vértices de salto, los de dead end y se añade al camino el vértice del salto. Repetimos la iteración evaluando de nuevo las condiciones anteriores a partir de la matriz de adyacencia del nuevo vértice actual para producir el siguiente salto.
+
+Una vez que todos los puntos hayan recorrido al menos 1 vez todo el grafo, el bucle termina cuando el grado del último vértice vale 0, esto es ha sido el último.
+
+Luego dependiendo de si queremos evaluar otros caminos, se reinicia la matriz de adyacencia y la de grados. Para empezar de nuevo si hay otro camino que evaluar desde otro vértice.
+
+
+\section{Eficiencia del algoritmo}
+
+La complejidad viene dada por la visita de todos los posibles vértices del grafo así como la evaluación del vector de grados, para evaluar cuál es el siguiente punto.
+Complejidad en el peor caso: O(V+E²).
+
+
+% \vspace{5mm}
+
+
+% \begin{lstlisting}[style=mybash]
+%     # Para una base de datos concreta
+%     mysqldump --user=tiendabd --password=password --databases tiendabd --add-drop-database --add-drop-table [--replace] --host=127.0.0.1 --result-file=dump.sql
+% \end{lstlisting}
+
+
+
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[scale=0.30]{cuestion_1_1}
+%	\caption{Se puede ver que al no haber un fallo grave, el sistema lo nota como que sigue funcionando pero en un estado degradado.}
+%\end{figure}
+
+%\newpage
+
+%Se pueden hacer include en latex
+%\input{plantilla_include.tex}
+
+
+%-------Bibliografia-----------------------------
+
+%\input{bibliografia.tex}
+
+\end{document}

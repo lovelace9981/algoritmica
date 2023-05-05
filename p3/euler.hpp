@@ -26,7 +26,7 @@ class Euler {
         Euler(const string file);
         ~Euler();
         
-        void greedyEulerAdjacencyMatrix();
+        void fleuryAlgorithm();
         void printEulerPath();
         void printAdjacencyMatrix();
 };

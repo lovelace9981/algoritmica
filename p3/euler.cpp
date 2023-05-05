@@ -1,5 +1,5 @@
 #include "euler.hpp"
-#define DEBUGEULER
+// #define DEBUGEULER
 /**
  * Para cumplir que tenga un camino de Euler, debemos tener en cuenta que:
  * Siempre hay 2 vertices con grado impar.  
@@ -65,11 +65,9 @@ void Euler::setRowAdjacencyMatrix(const string r){
         if(r.at(i) != '\t' &&  r.at(i) != ' '){
             a = r.at(i);
             n_t = a - '0';
-            cout << n_t << " ";
             v_r.push_back(n_t);
         }
     }
-    cout << endl;
 
     adjacencymatrix.push_back(v_r);
     v_r.clear();
@@ -191,7 +189,7 @@ void Euler::printEulerPath(){
 }
 
 
-void Euler::greedyEulerAdjacencyMatrix(){
+void Euler::fleuryAlgorithm(){
     vector<vector<int>> tempadjacency;
 
     for (int i = 0; i < nodes; i++){
@@ -230,14 +228,11 @@ void Euler::greedyEulerAdjacencyMatrix(){
                     while (nextVertex < nodes){
                         // Dead end
                         if (tempadjacency[actualVertex][nextVertex] == 1 && tempdegreeEulerVertex[nextVertex] == 1 && firstVertexDeadEnd == -1){
-                                cout << "DEAD END " << nextVertex << endl;
                                 firstVertexDeadEnd = nextVertex; // Adquire the first vertex if all are dead end
                         }
                         else if (tempadjacency[actualVertex][nextVertex] == 1 && tempdegreeEulerVertex[nextVertex] > 1){
-                            cout << "ENTRA GRADE > 1" << " NEXT " << nextVertex <<  endl;
                             // Check if this vertex don't drive to a dead end
                             if (tempdegreeEulerVertex[nextVertex] == 2){
-                                cout << "ENTRA GRADE 2" << endl;
                                 for (int i = 0; i < nodes; i++){
                                    if (i != actualVertex && tempadjacency[nextVertex][i] == 1 && tempdegreeEulerVertex[i] == 1 && vertexWithNextDeadEnd == -1){
                                         // Posible nextDeadEnd, because degree are 1, and this are vertex with one paths
@@ -250,7 +245,7 @@ void Euler::greedyEulerAdjacencyMatrix(){
                                    }
                                 }
                             }
-                            else if (tempdegreeEulerVertex[nextVertex] >= 2){
+                            else if (tempdegreeEulerVertex[nextVertex] > 2){
                                 break;
                             }
 
