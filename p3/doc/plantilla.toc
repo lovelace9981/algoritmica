@@ -1,0 +1,11 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Componentes del algoritmo Greedy}{3}{section.1}%
+\contentsline {section}{\numberline {2}Descripción del algoritmo Greedy con heurística basada en la matriz de adyacencia}{3}{section.2}%
+\contentsline {section}{\numberline {3}Algoritmo con heurística de número de aristas incidentes.}{6}{section.3}%
+\contentsline {section}{\numberline {4}Eficiencia de los algoritmos}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Algoritmo basado en heurística de matriz de adyacencia}{7}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Algoritmo basado en heurística de aristas incidentes.}{7}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Cómo compilar y ejecutar la aplicación}{8}{section.5}%
+\contentsline {section}{\numberline {6}Ejecución del ejercicio 1}{9}{section.6}%
+\contentsline {section}{\numberline {7}Ejecución del ejercicio 2}{11}{section.7}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

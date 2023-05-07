@@ -7,8 +7,8 @@
 
 \title{
 \normalfont \normalsize
-\includegraphics[width=6cm,height=6cm]{logo}\\
-\textsc{\textbf{Asignatura (2021-2022)} \\ Grado en Ingeniería Informática \\ Universidad de Granada} \\ [25pt] % Your university, school and/or department name(s)
+\includegraphics[width=13cm,height=6cm]{portada}\\
+\textsc{\textbf{Algorítmica (2022-2023)} \\ Grado en Ingeniería Informática \\ Universidad de Granada} \\ [25pt] % Your university, school and/or department name(s)
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
 \huge Memoria Práctica 3 \\ % The assignment title
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
@@ -39,9 +39,24 @@
 %	Cuestión 1
 %----------------------------------------------------------------------------------------
 
+\section{Componentes del algoritmo Greedy}
+Como ya sabemos, un algoritmo greedy tiene que estar formado de distintos elementos para poder ser formalizado como tal.
+\vspace{5mm}
+
+En este algoritmo tenemos los siguientes elementos:
+\begin{itemize}
+    \item \textbf{Conjunto de candidatos:} En este caso, el conjunto de candidatos es el conjunto de aristas del grafo.
+    \item \textbf{Conjunto de seleccionados:} El conjunto de seleccionados es el conjunto de nodos que forman el camino euleriano.
+    \item \textbf{Función de selección:} La función de selección es la que nos va a permitir elegir la arista que vamos a añadir al camino. En este caso, la función de selección es la que nos va a permitir elegir el nodo al que vamos a saltar.
+    \item \textbf{Función de factibilidad:} Es la función que comprueba si se puede obtener una solución. En este caso es la función que comprueba los prerrequisitos de un camino euleriano en un grafo.
+    \item \textbf{Función solución:} La función solución es la que nos va a permitir comprobar si hemos llegado al final del camino. En este caso, la función objetivo es la que comprueba si queda alguna arista en el nodo actual.
+    \item \textbf{Funcion objetivo:} Es la función que devuelve el camino euleriano. En este caso es la función que devuelve el contenido de la variable de camino.
+\end{itemize}
+
 \section{Descripción del algoritmo Greedy con heurística basada en la matriz de adyacencia}
 
 El algoritmo está encapsulado en una clase, debido a las enormes necesidades de heurística del algoritmo greedy.
+\vspace{5mm}
 
 La heurística de este algoritmo es basada en la matriz de adyacencia, donde la matriz de adyacencia nos proporciona información sobre las aristas de los vértices (o nodos) del grafo, a partir de la entrada de la matríz de adyacencia construimos la siguiente información:
 
@@ -51,17 +66,20 @@ La heurística de este algoritmo es basada en la matriz de adyacencia, donde la 
     \item Del fichero de entrada obtenemos el número de nodos.
 \end{itemize}
 
-Una vez obtenida toda la heurísitca ejecutamos el método\textbf{fleuryAlgorithm}, el algoritmo se ejecuta en base a lo siguiente:
+Una vez obtenida toda la heurísitca ejecutamos el método \textbf{fleuryAlgorithm}, el algoritmo se ejecuta en base a lo siguiente:
+\vspace{5mm}
 
 \textbf{El algoritmo está preparado para obtener todas las posibles rutas desde todos los vértices.} 
+\vspace{5mm}
 
 Se hace una copia de la matriz de adyacencia original y de los grados de los vértices, para no perder la información de la adyacencia durante las distintas búsquedas de rutas.
+\vspace{5mm}
 
 Pero debido a los limitados requisitos de la práctica solo se hará desde un punto, que se limita en la función de evalIfEulerPath, en dicha función se ha preparado que cuando los nodos sean pares, se introduzca un par aleatorio a partir del atributo de instancia del número de nodos.
 
 \begin{enumerate}
     \item Si la matriz tiene un solo nodo, se introduce el nodo y se termina la función.
-    \item Si la matriz tiene mas de un nodo, el algoritmo obtiene el nodo de partida (este ha sido obtenido previamente en evalIfEulerPath) y lo almacena en una variable temporal que indexa el vértice en el que está evaluando el siguiente al que debe saltar.
+    \item Si la matriz tiene mas de un nodo, el algoritmo obtiene el nodo de partida (este ha sido obtenido previamente en evalIfEulerPath y lo almacena en una variable temporal que indexa el vértice en el que está evaluando el siguiente al que debe saltar.
     \item Se introduce el nodo inicial en el eulerPath, para almacenar el nodo de partida.
     \item Evalúa si el nodo actual tiene un grado mayor que 0, si no lo tiene se termina el bucle y la función. 
     \item En caso de tener un grado mayor de 0, pasamos a recorrer su matriz de adyacencia, evaluando las siguientes condiciones básicas en todos los requisitos.
@@ -80,22 +98,133 @@ Pero debido a los limitados requisitos de la práctica solo se hará desde un pu
 \end{enumerate}
 
 Una vez completada la evaluación, con ese vértice de salto, pasamos a modificar la matriz para notificar que el salto se ha realizado, además se decrementa el grado de dicho vértice, para que en las próximas evaluaciones se escoja el mejor camino posible.
+\vspace{5mm}
 
 Finalmente se marca como vértice actual el del salto, se reinician las variables de lo vértices de salto, los de dead end y se añade al camino el vértice del salto. Repetimos la iteración evaluando de nuevo las condiciones anteriores a partir de la matriz de adyacencia del nuevo vértice actual para producir el siguiente salto.
+\vspace{5mm}
 
 Una vez que todos los puntos hayan recorrido al menos 1 vez todo el grafo, el bucle termina cuando el grado del último vértice vale 0, esto es ha sido el último.
+\vspace{5mm}
 
 Luego dependiendo de si queremos evaluar otros caminos, se reinicia la matriz de adyacencia y la de grados. Para empezar de nuevo si hay otro camino que evaluar desde otro vértice.
 
+\newpage
+\section{Algoritmo con heurística de número de aristas incidentes.}
 
-\section{Eficiencia del algoritmo}
+La heurística de este algoritmo se basa en coger el primer nodo adyacente al actual en el cual inciden más aristas. De este modo, conseguimos que el algoritmo se dirija hacia los nodos que tienen más aristas incidentes, y por tanto, más posibilidades de que el algoritmo no se quede sin opciones de camino.
+\vspace{5mm}
 
-La complejidad viene dada por la visita de todos los posibles vértices del grafo así como la evaluación del vector de grados, para evaluar cuál es el siguiente punto.
-Complejidad en el peor caso: O(V+E²).
+Para pasarle como argumento al programa un grafo hemos especificado un formato de archivo .graph de texto que especifica un grafo donde:
+
+\begin{enumerate}
+    \item La primera línea tiene que contener la letra G para que se compruebe que el formato del archivo es correcto
+    \item La segunda línea indica el número de nodos del grafo.
+    \item Las siguientes líneas indican las aristas del grafo, donde cada línea tiene primero el número de aristas que tiene el nodo y despúes todos los nodos a los que está conectado, de 0 a n-1.
+\end{enumerate}
+
+Además, hemos creado una clase Nodo con distintos métodos que nos van a permitir ir eliminando aristas conforme vayamos recorriendo el grafo y poder obtener el número de aristas incidentes fácilmente
+\vspace{5mm}
+
+Una vez hemos leído el grafo y lo hemos almacenado en un vector de Nodos, se ejecuta el algoritmo de la siguiente manera:
+\begin {enumerate}
+    \item Mientras que el nodo actual tenga alguna arista incidente:
+    \begin{enumerate}
+        \item Comprobamos de todos los Nodos adyacentes cual es el que tiene un mayor número de aristas incidentes para saber cuál es el siguiente.
+        \item Añadimos el nodo actual al camino
+        \item Se elimina la arista que une el nodo actual con el nodo siguiente.
+        \item Se actualiza el nodo actual al nodo adyacente.
+    \end {enumerate}
+    \item Una vez que el nodo actual no tiene aristas incidentes, se añade al camino y se termina el algoritmo.
+\end {enumerate}
+
+\newpage
+\section{Eficiencia de los algoritmos}
+
+\subsection{Algoritmo basado en heurística de matriz de adyacencia}
+La complejidad viene dada por la visita de todos los posibles vértices del grafo, así como la evaluación del vector de grados, para evaluar cuál es el siguiente punto.
+
+Siendo N el número de Vértices que tiene que analizar y E² los dos vectores de heurística del grado de los vértices de origen y el de destino.
+
+\textbf{Complejidad en el peor caso: O(N+E²).}
+
+\subsection{Algoritmo basado en heurística de aristas incidentes.}
+Este algoritmo es más sencillo y fácil de implementar que el que usa como heurística la matriz de adyacencia, pero es menos eficiente, ya que en el peor caso, que es cuando todos los nodos están conectados con todos entre sí, \textbf{la complejidad es O(n²)}, ya que en cada iteración del bucle principal (aunque se vayan eliminando aristas) se recorren todos los nodos adyacentes para encontrar el nodo con más aristas incidentes.
 
 
-% \vspace{5mm}
+\newpage
 
+\section {Cómo compilar y ejecutar la aplicación}
+
+Para compilar la aplicación, se debe ejecutar el comando siguiente en la carpeta raíz del proyecto. Esto generará dos ejecutables, arista.bin y adjacency.bin.
+
+\begin{lstlisting}[style=mybash]
+# On project root
+make run
+# Or build and manual running
+make build
+# run matrix adjacency heuristic
+./adjacency.bin salida.txt adjacencymatrix.matrix
+# run edge heuristic
+./arista.bin grafoEjemplo.graph
+\end{lstlisting}
+
+Como parámetros de entrada tienen:
+\begin{itemize}
+    \item \textbf{arista.bin}: El nombre del archivo de texto que contiene el grafo.
+    \item \textbf{adjacency.bin}: El nombre del archivo de texto para la salida y después el nombre del fichero de texto que contiene el grafo de adyacencia.
+\end{itemize}
+
+Además se pueden ejecutar ambos con el grafo de las diapositivas de la práctica con el comando \textbf{make run} y con otro grafo de ejemplo. 
+
+\newpage
+\section{Ejecución del ejercicio 1}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.40]{grafo_ejercicio1}
+	\caption{Grafo del ejercicio 1 el ejemplo propuesto}
+\end{figure}
+
+\textbf{Heurística de matriz de adyacencia}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.40]{adjacency1}
+	\caption{Heurística de matriz de adyacencia aplicadas al grafo 1}
+\end{figure}
+
+\textbf{Heurística de aristas }
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.40]{edge1}
+	\caption{Heurística de aristas aplicadas al grafo 1}
+\end{figure}
+
+\newpage
+\section{Ejecución del ejercicio 2}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.40]{grafo_ejercicio2}
+	\caption{Grafo del ejercicio 2}
+\end{figure}
+
+\textbf{Heurística de matriz de adyacencia}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.40]{adjacency2}
+	\caption{Heurística de matriz de adyacencia aplicadas al grafo 2}
+\end{figure}
+
+\textbf{Heurística de aristas }
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.40]{edge2}
+	\caption{Heurística de aristas aplicadas al grafo 2}
+\end{figure}
 
 % \begin{lstlisting}[style=mybash]
 %     # Para una base de datos concreta

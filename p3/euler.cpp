@@ -30,13 +30,13 @@ void Euler::evalIfEulerPath(){
         // terminate();
         // Escogemos cualquier punto
         oddEulerVertex.push_back(0);
-        srand(time(NULL)); // Semilla
-        oddEulerVertex.push_back(rand()%nodes);
+        // srand(time(NULL)); // Semilla
+        // oddEulerVertex.push_back(rand()%nodes);
     }
-    else if (odd == 1){
-        cerr << "The graph have only one odd vertex" << endl;
-        terminate();
-    }
+    // else if (odd == 1){
+    //     cerr << "The graph have only one odd vertex" << endl;
+    //     terminate();
+    // }
     else if (odd > 2){
         cerr << "The graph have more than 2 odd vertex" << endl;
         terminate();
@@ -51,6 +51,11 @@ void Euler::storeEulerDegree(const int vertex){
         if (adjacencymatrix[vertex][i]==1){
             degree++;
         }
+    }
+
+    if (degree == 0){
+        cerr << "The graph have one vertex disjointed" << endl;
+        terminate();
     }
 
     degreeEulerVertex.push_back(degree);
@@ -95,9 +100,6 @@ void Euler::openFile(const string filename){
     if (!header){
         if (line == "M"){
             matrixMode = true;
-        }
-        else if (line == "G"){
-            graphMode = true;
         }
         else {           
             cerr << "Error en el header" << endl;
