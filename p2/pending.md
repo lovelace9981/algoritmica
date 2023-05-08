@@ -1,0 +1,7 @@
+- [ ]  Generador de componentes aleatorios
+- [ ]  Algoritmo de ordenamiento de los puntos de tamaño K, de manera lexicográfica para hacer posible su comparación.
+- [ ]  Template de la clase de P2.
+  - [ ]  Atributo privado de vector marcador de los componentes dominantes.
+- [ ]  Algoritmo de comparación de los componentes.
+- [ ]  Algoritmo iterativo de comparación de los puntos.
+- [ ]  Algoritmo divide y vencerás de comparación de los puntos.

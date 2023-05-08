@@ -42,8 +42,7 @@ void vectorSinRepeticion(const vector<int> &vectorOriginal, vector<int> &vectorF
     }
 }
 
-void merge(vector<int> &unorderedVector, const int left, const int medio, const int right)
-{
+void merge(vector<int> &unorderedVector, const int left, const int medio, const int right) {
     // Iteradores, no coge el final, es un rango [left, medio), [medio, right)
     vector<int>::const_iterator begin_array1 = unorderedVector.begin() + left;
     vector<int>::const_iterator end_array1_begin_array2 = unorderedVector.begin() + medio;
@@ -176,7 +175,7 @@ class APO {
                 // sub-tree
                 heapify(N, largest);
             }
-        };
+        }
         
     public:
         APO(const vector<T> & v){
