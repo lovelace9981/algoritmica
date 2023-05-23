@@ -16,93 +16,94 @@ struct Compra
     Compra(vector<int> acciones, int beneficio) : acciones(acciones), beneficio(beneficio) {}
 };
 
-float calcularBeneficio (const vector<int>& acciones, const vector<float>& price, const vector<float>& profit)
+float calcularBeneficio(const vector<int> &acciones, const vector<float> &price, const vector<float> &profit)
 {
     float beneficio = 0;
     for (int i = 0; i < acciones.size(); i++)
     {
-        beneficio +=  price[acciones[i]] * profit[acciones[i]];
+        beneficio += acciones[i] * price[i] * profit[i];
     }
     return beneficio;
 }
 
-float calcularCoste(const vector<int>& acciones, const vector<float>& price, const vector<float>& commissions)
+float calcularCoste(const vector<int> &acciones, const vector<float> &price, const vector<float> &commissions)
 {
     float coste = 0;
     for (int i = 0; i < acciones.size(); i++)
     {
-        coste += price[acciones[i]] + commissions[acciones[i]];
+        coste += acciones[i] * price[i] + acciones[i] * commissions[i];
     }
     return coste;
 }
 
 // Función que devuelve una compra
-void printCombinations(float budget, const vector<int>& array, const vector<float>& price, const vector<float>& commissions , const vector<float>& profit)
+void printCombinations(float budget, const vector<int> &shares, const vector<float> &price, const vector<float> &commissions, const vector<float> &profit)
 {
-    // Create a vector to store the combinations.
-    set<vector<int>> combinations;
-
-    cout << "Tenemos " << pow(2, array.size()) << " combinaciones posibles" << endl;
-
-    // Iterate over all possible combinations.
-    for (int i = 0; i < pow(2, array.size()); i++)
-    {
-        // Create a vector to store the current combination.
-        vector<int> combination;
-
-        // Iterate over the bits of i.
-        for (int j = 0; j < array.size(); j++)
-        {
-            // If the jth bit of i is set, add the jth element of array to the combination.
-            if (i & (1 << j))
-            {
-                combination.push_back(array[j]);
-            }
-        }
-
-        // Si el coste de la combinación es menor que el presupuesto, la añadimos a la lista de combinaciones
-        if (calcularCoste(combination, price, commissions) <= budget)
-        {
-            combinations.insert(combination);
-        }
-
-
-        // // If the combination has the desired size, add it to the list of combinations.
-        // if (combination.size() == r)
-        // {
-        //     combinations.push_back(combination);
-        // }
-    }
-
     // Mejor compra posible
-    Compra mejorCompra ;
+    Compra mejorCompra;
 
-    // Por cada combinación, comprobamos si es la mejor compra
-    for (auto combination : combinations)
+    // Iteramos sobre todas las posibilidades y comprobamos cuál es la mejor
+    // Comenzamos con 0 acciones de cualquier empresa y vamos sumando
+    vector<int> array = vector<int>(shares.size(), 0);
+    int cont = 0;
+
+    while (true)
     {
-        // Calculamos el beneficio de la combinación
-        float beneficio = calcularBeneficio(combination, price, profit);
-
-        // Si el coste es menor que el presupuesto y el beneficio es mayor que el de la mejor compra, actualizamos la mejor compra
-        if (beneficio > mejorCompra.beneficio)
+        cont++;
+        // Imprimimos la combinación
+        for (int i = 0; i < array.size(); i++)
         {
-            mejorCompra.acciones = combination;
-            mejorCompra.beneficio = beneficio;
-            mejorCompra.coste = calcularCoste(combination, price, commissions);
-        }
-    }
-
-    // Imprimimos todas las combinaciones
-    cout << "Tenemos " << combinations.size() << " combinaciones posibles en las que no se pasa del presupuesto:" << endl;
-    for(auto combination : combinations)
-    {
-        for (int i = 0; i < combination.size(); i++)
-        {
-            cout << combination[i] << " ";
+            cout << array[i] << " ";
         }
         cout << endl;
+
+        // Comprobamos si la combinación de acciones antes de sumar uno es mejor que la mejor compra
+        float coste = calcularCoste(array, price, commissions);
+        float beneficio = calcularBeneficio(array, price, profit);
+        if (coste <= budget and beneficio > mejorCompra.beneficio)
+        {
+            mejorCompra = Compra(array, beneficio);
+            mejorCompra.beneficio = beneficio;
+            mejorCompra.coste = coste;
+        }
+
+        // Si no hay más combinaciones salimos del bucle
+        if (array == shares)
+        {
+            break;
+        }
+
+        // Sumamos uno a la primera posición
+        array[0]++;
+
+        // Modificamos el array para que, si la suma de acciones es mayor que el número de acciones de la empresa, sumamos uno a la siguiente posición
+        for (int i = 0; i < array.size(); i++)
+        {
+            if (array[i] == shares[i] and array[i + 1] != shares[i + 1])
+            {
+                // Imprimimos la combinación
+                for (int i = 0; i < array.size(); i++)
+                {
+                    cout << array[i] << " ";
+                }
+                cout << endl;
+
+                // Comprobamos si la combinación de acciones después de sumar uno es mejor que la mejor compra
+                coste = calcularCoste(array, price, commissions);
+                beneficio = calcularBeneficio(array, price, profit);
+                if (coste <= budget and beneficio > mejorCompra.beneficio)
+                {
+                    mejorCompra = Compra(array, beneficio);
+                    mejorCompra.beneficio = beneficio;
+                    mejorCompra.coste = coste;
+                }
+
+                array[i] = 0;
+                array[i + 1]++;
+            }
+        }
     }
-    cout << endl;
+    cout << "Total de combinaciones: " << cont << endl;
 
     // Imprimimos la mejor compra
     cout << "Mejor compra: ";
@@ -113,12 +114,11 @@ void printCombinations(float budget, const vector<int>& array, const vector<floa
     cout << endl;
     cout << "Coste: " << mejorCompra.coste << endl;
     cout << "Beneficio: " << mejorCompra.beneficio << endl;
-
 }
 
 void leerArchivo(vector<int> &shares, vector<float> &price, vector<float> &commissions, vector<float> &profit, string filename)
 {
-    ifstream file ;
+    ifstream file;
     file.open(filename);
 
     // Si el fichero no se abre lanzamos un error
@@ -140,7 +140,8 @@ void leerArchivo(vector<int> &shares, vector<float> &price, vector<float> &commi
     int numEmpresas;
     file >> numEmpresas;
     // Iteramos sobre el número de empresas y vamos añadiendo las acciones, precio, comisiones y beneficio
-    for(int i=0 ; i<numEmpresas; i++) {
+    for (int i = 0; i < numEmpresas; i++)
+    {
         int acciones;
         float precio;
         float comision;
@@ -151,18 +152,19 @@ void leerArchivo(vector<int> &shares, vector<float> &price, vector<float> &commi
         commissions.push_back(comision);
         profit.push_back(beneficio);
     }
-
 }
 
 int main(int argc, char const *argv[])
 {
-    vector<int> shares ;
-    vector<float> price ;
+    vector<int> shares;
+    vector<float> price;
     vector<float> commissions;
-    vector<float> profit ;
+    vector<float> profit;
 
-    if(argc < 3) {
+    if (argc < 3)
+    {
         cerr << "Uso: ./main <presupuesto> <nombre_fichero_entrada>" << endl;
+        exit(1);
     }
 
     // Leemos el archivo con la información
@@ -170,26 +172,16 @@ int main(int argc, char const *argv[])
 
     float budget = atof(argv[1]);
 
-    // Creamos el array con todas las acciones disponibles
-    vector<int> array;
+    // Imprimimos el número de acciones que tiene cada empresa
+    cout << "Acciones: ";
     for (int i = 0; i < shares.size(); i++)
     {
-        for (int j = 0; j < shares[i]; j++)
-        {
-            array.push_back(i);
-        }
-    }
-
-    // Imprimimos el array
-    cout << "Array: ";
-    for (int i = 0; i < array.size(); i++)
-    {
-        cout << array[i] << " ";
+        cout << shares[i] << " ";
     }
     cout << endl;
 
     // Llamamos a la función que nos devuelve la mejor compra posible
-    printCombinations(budget, array, price, commissions, profit);
+    printCombinations(budget, shares, price, commissions, profit);
 
     return 0;
 }
