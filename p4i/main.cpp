@@ -91,6 +91,7 @@ void printCombinations(float budget, const vector<int> &shares, const vector<flo
                 // Comprobamos si la combinación de acciones después de sumar uno es mejor que la mejor compra
                 coste = calcularCoste(array, price, commissions);
                 beneficio = calcularBeneficio(array, price, profit);
+                cont++;
                 if (coste <= budget and beneficio > mejorCompra.beneficio)
                 {
                     mejorCompra = Compra(array, beneficio);
