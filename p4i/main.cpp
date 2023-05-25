@@ -50,12 +50,12 @@ void printCombinations(float budget, const vector<int> &shares, const vector<flo
     while (true)
     {
         cont++;
-        // Imprimimos la combinación
-        for (int i = 0; i < array.size(); i++)
-        {
-            cout << array[i] << " ";
-        }
-        cout << endl;
+        // // Imprimimos la combinación
+        // for (int i = 0; i < array.size(); i++)
+        // {
+        //     cout << array[i] << " ";
+        // }
+        // cout << endl;
 
         // Comprobamos si la combinación de acciones antes de sumar uno es mejor que la mejor compra
         float coste = calcularCoste(array, price, commissions);
@@ -81,12 +81,12 @@ void printCombinations(float budget, const vector<int> &shares, const vector<flo
         {
             if (array[i] == shares[i] and array[i + 1] != shares[i + 1])
             {
-                // Imprimimos la combinación
-                for (int i = 0; i < array.size(); i++)
-                {
-                    cout << array[i] << " ";
-                }
-                cout << endl;
+                // // Imprimimos la combinación
+                // for (int i = 0; i < array.size(); i++)
+                // {
+                //     cout << array[i] << " ";
+                // }
+                // cout << endl;
 
                 // Comprobamos si la combinación de acciones después de sumar uno es mejor que la mejor compra
                 coste = calcularCoste(array, price, commissions);
@@ -173,13 +173,13 @@ int main(int argc, char const *argv[])
 
     float budget = atof(argv[1]);
 
-    // Imprimimos el número de acciones que tiene cada empresa
-    cout << "Acciones: ";
-    for (int i = 0; i < shares.size(); i++)
-    {
-        cout << shares[i] << " ";
-    }
-    cout << endl;
+    // // Imprimimos el número de acciones que tiene cada empresa
+    // cout << "Acciones: ";
+    // for (int i = 0; i < shares.size(); i++)
+    // {
+    //     cout << shares[i] << " ";
+    // }
+    // cout << endl;
 
     // Llamamos a la función que nos devuelve la mejor compra posible
     printCombinations(budget, shares, price, commissions, profit);

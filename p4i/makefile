@@ -1,19 +1,25 @@
 buildBF:
 	@echo "Building Brute Force program..."
-	g++ -o mainBF.bin main.cpp
+	g++ -o BFmain.bin main.cpp
 
 buildDP:
 	@echo "Building Dynamic Programming program..."
-	g++ -o mainDP.bin mainPD.cpp
+	g++ -o DPmain.bin mainPD.cpp
+
+build: buildBF buildDP
 
 clean: 
 	@echo "Removing .bin files..."
 	rm *.bin
 
-runBF: buildBF
+BFrun: buildBF
 	@echo "Running Brute Force program for pruebaPapel.stocks with 10 budget..."
-	./mainBF.bin 10 pruebaPapel.stocks
+	./BFmain.bin 10 pruebaPapel.stocks
 
-runDP: buildDP
+DPrun: buildDP
 	@echo "Running Dynamic Programming program for pruebaPapel.stocks with 10 budget..."
-	./mainDP.bin 10 pruebaPapel.stocks
+	./DPmain.bin 10 pruebaPapel.stocks
+
+debugDP:
+	@echo "Building DPmain for debugging..."
+	g++ -g -o DPmain.bin mainPD.cpp
