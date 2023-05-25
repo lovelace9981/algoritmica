@@ -1,4 +1,6 @@
 #include <vector>
+#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -148,8 +150,63 @@ Compra calculoPD(vector<vector<Compra>> &mem, float intervalo, float budget, int
     return mejorCompra;
 }
 
+void leerArchivo(vector<int> &shares, vector<float> &price, vector<float> &commissions, vector<float> &profit, string filename)
+{
+    ifstream file;
+    file.open(filename);
+
+    // Si el fichero no se abre lanzamos un error
+    if (!file.is_open())
+    {
+        cerr << "Error al abrir el archivo" << endl;
+        exit(1);
+    }
+
+    // Comprobamos que el primer carácter es una E
+    char c;
+    file >> c;
+    if (c != 'E')
+    {
+        cerr << "Error en el formato del archivo" << endl;
+        exit(1);
+    }
+    // Leemos el número de empresas
+    int numEmpresas;
+    file >> numEmpresas;
+    // Iteramos sobre el número de empresas y vamos añadiendo las acciones, precio, comisiones y beneficio
+    for (int i = 0; i < numEmpresas; i++)
+    {
+        int acciones;
+        float precio;
+        float comision;
+        float beneficio;
+        file >> acciones >> precio >> comision >> beneficio;
+        shares.push_back(acciones);
+        price.push_back(precio);
+        commissions.push_back(comision);
+        profit.push_back(beneficio);
+    }
+}
+
 int main(int argc, char const *argv[])
 {
-    /* code */
+    vector<int> shares;
+    vector<float> price;
+    vector<float> commissions;
+    vector<float> profit;
+
+    if (argc < 3)
+    {
+        cerr << "Uso: ./main <presupuesto> <nombre_fichero_entrada>" << endl;
+        exit(1);
+    }
+
+    // Leemos el archivo con la información
+    leerArchivo(shares, price, commissions, profit, argv[2]);
+
+    float budget = atof(argv[1]);
+
+    // Inicializamos la matriz de memorización
+    vector<vector<Compra>> mem = vector<vector<Compra>>(shares.size());
     return 0;
 }
