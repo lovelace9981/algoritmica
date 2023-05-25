@@ -25,6 +25,9 @@ Compra calculoPD(vector<vector<Compra>> &mem, float intervalo, float budget, int
         return mem[empresa][(int)(budget / intervalo)];
     }
 
+    if(empresa == 0) 
+        return mem[empresa][(int)(budget / intervalo)];
+
     // Si no, calculamos la mejor compra posible
     Compra mejorCompra;
 
@@ -147,6 +150,24 @@ Compra calculoPD(vector<vector<Compra>> &mem, float intervalo, float budget, int
 
     // Guardamos la mejor compra para ese presupuesto y la devolvemos
     mem[empresa][(int)(budget / intervalo)] = mejorCompra;
+
+    // Imprimimos el header de la tabla con los valores de los intervalos
+    cout << "Int.\t";
+    for (int i = 0; i < mem[0].size(); i++)
+    {
+        cout << i * intervalo << "\t";
+    }
+    cout << endl;
+
+    // Imprimimos la tabla después de calcular la mejor compra
+    for(int i = 0; i < mem.size(); i++){
+        for(int j = 0; j < mem[i].size(); j++){
+            cout << i << "\t";
+            cout << mem[i][j].beneficio << "\t";
+        }
+        cout << endl;
+    }
+    cout << "-------------------------" << endl ;
     return mejorCompra;
 }
 
@@ -188,8 +209,25 @@ void leerArchivo(vector<int> &shares, vector<float> &price, vector<float> &commi
     }
 }
 
+void sort(vector<pair<float, int>> &v)
+{
+    for (int i = 0; i < v.size(); i++)
+    {
+        for (int j = 0; j < v.size() - 1; j++)
+        {
+            if (v[j].first > v[j + 1].first)
+            {
+                pair<float, int> aux = v[j];
+                v[j] = v[j + 1];
+                v[j + 1] = aux;
+            }
+        }
+    }
+}
+
 int main(int argc, char const *argv[])
 {
+    const int NUM_INTERVALOS = 2;
     vector<int> shares;
     vector<float> price;
     vector<float> commissions;
@@ -204,9 +242,81 @@ int main(int argc, char const *argv[])
     // Leemos el archivo con la información
     leerArchivo(shares, price, commissions, profit, argv[2]);
 
+    // Ordenamos el orden de las empresas en orden ascendente de (beneficio*precio)/(precio+comision)
+    vector<pair<float, int>> ordenEmpresas;
+    for (int i = 0; i < shares.size(); i++)
+    {
+        ordenEmpresas.push_back(make_pair((profit[i] * price[i]) / (price[i] + commissions[i]), i));
+    }
+
+    // Llamamos a la función para ordenar el vector
+    sort(ordenEmpresas);
+
+    vector<int> sharesOrden;
+    vector<float> priceOrden;
+    vector<float> commissionsOrden;
+    vector<float> profitOrden;
+    // Ordenamos los vectores de acciones, precio, comisiones y beneficio en el orden que nos ha dado la función sort
+    for (int i = 0; i < ordenEmpresas.size(); i++)
+    {
+        sharesOrden.push_back(shares[ordenEmpresas[i].second]);
+        priceOrden.push_back(price[ordenEmpresas[i].second]);
+        commissionsOrden.push_back(commissions[ordenEmpresas[i].second]);
+        profitOrden.push_back(profit[ordenEmpresas[i].second]);
+    }
+
+    // Obtenemos el presupuesto especificado por el usuario
     float budget = atof(argv[1]);
 
     // Inicializamos la matriz de memorización
     vector<vector<Compra>> mem = vector<vector<Compra>>(shares.size());
+
+    // Inicializamos la matriz de memorización con todo a -1
+    for (int i = 0; i < mem.size(); i++)
+    {
+        // Tendremos NUM_INTERVALOS + 1 columnas, pues el presupuesto va desde el intervalo 0 al NUM_INTERVALOS, que sería el presupuesto que se le pasa a el programa
+        mem[i] = vector<Compra>(NUM_INTERVALOS + 1);
+        for (int j = 0; j < mem[i].size(); j++)
+        {
+            mem[i][j].beneficio = -1;
+            mem[i][j].coste = -1;
+            mem[i][j].acciones = vector<int>(shares.size());
+        }
+    }
+
+    // Tendremos NUM_INTERVALOS columnas, por lo que los intervalos serán la división del presupuesto entre NUM_INTERVALOS
+    float intervalo = budget / NUM_INTERVALOS;
+
+    // Calculamos los valores de la primera fila de la matriz de memorización, pues es el caso base donde el beneficio es el máximo que se puede obtener con el presupuesto de esa columna comprando acciones de la empresa 0
+    for (int i = 0; i < mem[0].size(); i++)
+    {
+        int accionesComprables = (int)((intervalo*i) / (price[0] + commissions[0]));
+        if(accionesComprables > shares[0])
+            accionesComprables = shares[0];
+        mem[0][i].beneficio = accionesComprables * price[0] * profit[0];
+        mem[0][i].coste = accionesComprables * (price[0] + commissions[0]);
+        mem[0][i].acciones[0] = accionesComprables;
+    }
+
+    // Los valores de la la columna 0 tienen que ser 0 para cualquier empresa, pues con presupuesto 0 no se puede comprar ninguna acción
+    for (int i = 0; i < mem.size(); i++)
+    {
+        mem[i][0].beneficio = 0;
+        mem[i][0].coste = 0;
+    }
+
+    // Calculamos la mejor compra teniendo en cuenta todas las empresas para el presupuesto que se le pasa al programa
+    Compra mejorCompra = calculoPD(mem, intervalo, budget, sharesOrden.size() - 1, sharesOrden, priceOrden, commissionsOrden, profitOrden);
+
+    // Imprimimos el beneficio y el coste de la mejor compra, además de la cantidad de acciones que se han comprado de cada empresa
+    cout << "Beneficio: " << mejorCompra.beneficio << endl;
+    cout << "Coste: " << mejorCompra.coste << endl;
+    cout << "Acciones: ";
+    for (int i = 0; i < mejorCompra.acciones.size(); i++)
+    {
+        cout << mejorCompra.acciones[i] << " ";
+    }
+    cout << endl;
+    
     return 0;
 }
