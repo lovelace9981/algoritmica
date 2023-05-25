@@ -135,6 +135,7 @@ Compra calculoPD(vector<vector<Compra>> &mem, float intervalo, float budget, int
 
 
     // Calculamos de los cuatro casos, cual es el que nos da más beneficio y lo guardamos en la variable mejorCompra
+    // TODO Comprobar que, al sumar de la anterior empresa podemos comprar de la empresa actual
     mejorCompra = comprasPosibles[0];
     for (int i = 1; i < comprasPosibles.size(); i++)
     {
