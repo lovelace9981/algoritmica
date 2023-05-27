@@ -17,7 +17,7 @@ struct Compra
 // Función que calcula la mejor compra posible con Programacion Dinamica, devuelve una compra
 // Como argumentos tiene, el vector que almacena las mejores compras, el presupuesto, el intervalo de presupuestos, el número de acciones por empresa,
 // el precio de las acciones, las comisiones y el porcentaje de beneficio de las acciones.
-Compra calculoPD(vector<vector<Compra>> &mem, float intervalo, float budget, int empresa, const vector<int> &shares, const vector<float> &price, const vector<float> &commissions, const vector<float> &profit)
+Compra calculoPD(vector<vector<Compra>> &mem, double intervalo, double budget, int empresa, const vector<int> &shares, const vector<float> &price, const vector<float> &commissions, const vector<float> &profit)
 {
     // Si ya hemos calculado la mejor compra para ese presupuesto, la devolvemos
     if (mem[empresa][(int)(budget / intervalo)].beneficio != -1)
@@ -31,8 +31,18 @@ Compra calculoPD(vector<vector<Compra>> &mem, float intervalo, float budget, int
     vector<Compra> comprasPosibles = vector<Compra>(4) ;
 
     // Tenemos cuatro casos en la ecuación de recurrencia, calculamos los cuatro y sacamos el máximo
-    // Caso 1: No compramos ninguna acción de la empresa, es decir, tenemos en cuenta la mejor opción de la fila anterior
+    // Caso 1: No compramos ninguna acción de la empresa, es decir, tenemos en cuenta la mejor opción de la fila anterior y comprobamos si podemos comprar alguna acción
+    // de la empresa actual
     comprasPosibles[0] = calculoPD(mem, intervalo, budget, empresa - 1, shares, price, commissions, profit);
+    // Calculamos si con el presupuesto restante se pueden comprar acciones de la empresa actual
+    int accionesCompradas = (int)((budget-comprasPosibles[0].coste) / (price[empresa] + commissions[empresa]));
+    if(accionesCompradas > shares[empresa])
+        accionesCompradas = shares[empresa];
+    if(accionesCompradas > shares[empresa] - comprasPosibles[0].acciones[empresa])
+        accionesCompradas = shares[empresa] - comprasPosibles[0].acciones[empresa];
+    comprasPosibles[0].acciones[empresa] += accionesCompradas;
+    comprasPosibles[0].coste += accionesCompradas * (price[empresa] + commissions[empresa]);
+    comprasPosibles[0].beneficio += accionesCompradas * price[empresa] * profit[empresa];
 
     /*
         ------------------------------------------------------
@@ -53,7 +63,7 @@ Compra calculoPD(vector<vector<Compra>> &mem, float intervalo, float budget, int
     float presupuestoExtra = budget - casoAnterior.coste;
 
     // Calculamos el número de acciones de la empresa que podemos comprar con el presupuesto extra
-    int accionesCompradas = (int)(presupuestoExtra / (price[empresa] + commissions[empresa]));
+    accionesCompradas = (int)(presupuestoExtra / (price[empresa] + commissions[empresa]));
 
     // Tenemos que comprobar si podemos comprar más acciones de las disponibles
     if(accionesCompradas > accionesDisponibles[empresa])
@@ -80,7 +90,8 @@ Compra calculoPD(vector<vector<Compra>> &mem, float intervalo, float budget, int
         ------------------------------------------------------
     */
 
-    // Caso 3: Comprobamos el beneficio de comprar con el presupuesto anterior, la mejor opción con el presupuesto restante teniendo en cuenta la empresa anterior
+    // Caso 3: Comprobamos el beneficio de comprar con el presupuesto anterior, la mejor opción con el presupuesto restante teniendo en cuenta la empresa anterior y
+    // de la empresa actual si sobra dinero de comprar la mejor opción teniendo en cuenta la empresa anterior.
     // Reutilizamos variables de presupuestoExtra y compraAnterior, pues son los mismos valores y no se modifican
 
     // Calculamos el beneficio que podemos obtener teniendo en cuenta la empresa anterior con el presupuesto restante
@@ -110,10 +121,21 @@ Compra calculoPD(vector<vector<Compra>> &mem, float intervalo, float budget, int
         beneficio += accionesDisponibles[i] * price[i] * profit[i];
         coste += accionesDisponibles[i] * (price[i] + commissions[i]);
     }
+
     // Actualizamos la variable de caso 3 poniendole el nuevo beneficio
     comprasPosibles[2] = casoAnterior;
     comprasPosibles[2].beneficio += beneficio;
     comprasPosibles[2].coste += coste;
+
+    // Calculamos si con el presupuesto restante se pueden comprar acciones de la empresa actual
+    accionesCompradas = (int)((budget-comprasPosibles[2].coste) / (price[empresa] + commissions[empresa]));
+    if(accionesCompradas > shares[empresa])
+        accionesCompradas = shares[empresa];
+    if(accionesCompradas > shares[empresa] - comprasPosibles[2].acciones[empresa])
+        accionesCompradas = shares[empresa] - comprasPosibles[2].acciones[empresa];
+    comprasPosibles[2].acciones[empresa] += accionesCompradas;
+    comprasPosibles[2].coste += accionesCompradas * (price[empresa] + commissions[empresa]);
+    comprasPosibles[2].beneficio += accionesCompradas * price[empresa] * profit[empresa];
     for (int i = 0; i < accionesDisponibles.size(); i++)
     {
         comprasPosibles[2].acciones[i] += accionesDisponibles[i];
@@ -212,7 +234,7 @@ void sort(vector<pair<float, int>> &v)
     {
         for (int j = 0; j < v.size() - 1; j++)
         {
-            if (v[j].first > v[j + 1].first)
+            if (v[j].first < v[j + 1].first)
             {
                 pair<float, int> aux = v[j];
                 v[j] = v[j + 1];
@@ -270,7 +292,7 @@ int main(int argc, char const *argv[])
     }
 
     // Obtenemos el presupuesto especificado por el usuario
-    float budget = atof(argv[1]);
+    double budget = atof(argv[1]);
 
     // Inicializamos la matriz de memorización
     vector<vector<Compra>> mem = vector<vector<Compra>>(shares.size());
@@ -289,7 +311,7 @@ int main(int argc, char const *argv[])
     }
 
     // Tendremos NUM_INTERVALOS columnas, por lo que los intervalos serán la división del presupuesto entre NUM_INTERVALOS
-    float intervalo = budget / NUM_INTERVALOS;
+    double intervalo = budget / NUM_INTERVALOS;
 
     // Calculamos los valores de la primera fila de la matriz de memorización, pues es el caso base donde el beneficio es el máximo que se puede obtener con el presupuesto de esa columna comprando acciones de la empresa 0
     for (int i = 0; i < mem[0].size(); i++)
@@ -307,10 +329,19 @@ int main(int argc, char const *argv[])
     {
         mem[i][0].beneficio = 0;
         mem[i][0].coste = 0;
+        mem[i][0].acciones = vector<int>(shares.size(), 0);
     }
 
     // Calculamos la mejor compra teniendo en cuenta todas las empresas para el presupuesto que se le pasa al programa
     Compra mejorCompra = calculoPD(mem, intervalo, budget, sharesOrden.size() - 1, sharesOrden, priceOrden, commissionsOrden, profitOrden);
+
+    // Imprimimos las acciones que tienen disponibles cada empresa
+    cout << "Acciones disponibles: ";
+    for (int i = 0; i < sharesOrden.size(); i++)
+    {
+        cout << sharesOrden[i] << " ";
+    }
+    cout << endl;
 
     // Imprimimos el beneficio y el coste de la mejor compra, además de la cantidad de acciones que se han comprado de cada empresa
     cout << "Mejor compra: ";
