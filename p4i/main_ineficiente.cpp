@@ -176,8 +176,17 @@ int main(int argc, char const *argv[])
     }
     cout << endl;
 
+    // Tomamos el tiempo de inicio
+    clock_t tantes = clock();
+
     // Llamamos a la función que nos devuelve la mejor compra posible
     printCombinations(budget, array, price, commissions, profit);
+
+    // Tomamos el tiempo de finalización
+    clock_t tdespues = clock();
+
+    // Mostramos el tiempo de ejecución
+    cout << "Tiempo de ejecución: " << (double)(tdespues - tantes) / CLOCKS_PER_SEC << endl;
 
     return 0;
 }

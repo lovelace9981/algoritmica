@@ -349,8 +349,17 @@ int main(int argc, char const *argv[])
     // Imprimimos la tabla
     printTabla(mem, intervalo);
 
+    // Tomamos el tiempo antes de llamar a la función de Programación Dinámica
+    clock_t tantes = clock();
+
     // Calculamos la mejor compra teniendo en cuenta todas las empresas para el presupuesto que se le pasa al programa
     Compra mejorCompra = calculoPD(mem, intervalo, budget, sharesOrden.size() - 1, sharesOrden, priceOrden, commissionsOrden, profitOrden);
+
+    //Tomamos el tiempo después de llamar a la función de Programación Dinámica
+    clock_t tdespues = clock();
+
+    // Mostramos el tiempo que ha tardado en ejecutarse el algoritmo
+    cout << "Tiempo de ejecución: " << (double)(tdespues - tantes) / CLOCKS_PER_SEC << endl;
 
     // Imprimimos el beneficio y el coste de la mejor compra, además de la cantidad de acciones que se han comprado de cada empresa
     cout << "Mejor compra: ";
