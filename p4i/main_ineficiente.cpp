@@ -92,18 +92,6 @@ void printCombinations(float budget, const vector<int>& array, const vector<floa
         }
     }
 
-    // Imprimimos todas las combinaciones
-    cout << "Tenemos " << combinations.size() << " combinaciones posibles en las que no se pasa del presupuesto:" << endl;
-    for(auto combination : combinations)
-    {
-        for (int i = 0; i < combination.size(); i++)
-        {
-            cout << combination[i] << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
     // Imprimimos la mejor compra
     cout << "Mejor compra: ";
     for (int i = 0; i < mejorCompra.acciones.size(); i++)

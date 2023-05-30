@@ -14,6 +14,29 @@ struct Compra
     Compra(vector<int> acciones, int beneficio) : acciones(acciones), beneficio(beneficio) {}
 };
 
+void printTabla(const vector<vector<Compra>> &mem, int intervalo)
+{
+     // Imprimimos el header de la tabla con los valores de los intervalos
+    cout << "Int.\t";
+    for (int i = 0; i < mem[0].size(); i++)
+    {
+        cout << i * intervalo << "\t";
+    }
+    cout << endl;
+
+    // Imprimimos los valores de la tabla después de calcular la mejor compra
+    for (int i = 0; i < mem.size(); i++)
+    {
+        cout << i << "\t";
+        for (int j = 0; j < mem[i].size(); j++)
+        {
+            cout << mem[i][j].beneficio << "\t";
+        }
+        cout << endl;
+    }
+    cout << "-------------------------" << endl;
+}
+
 // Función que calcula la mejor compra posible con Programacion Dinamica, devuelve una compra
 // Como argumentos tiene, el vector que almacena las mejores compras, el presupuesto, el intervalo de presupuestos, el número de acciones por empresa,
 // el precio de las acciones, las comisiones y el porcentaje de beneficio de las acciones.
@@ -168,25 +191,8 @@ Compra calculoPD(vector<vector<Compra>> &mem, double intervalo, double budget, i
     // Guardamos la mejor compra para ese presupuesto y la devolvemos
     mem[empresa][(int)(budget / intervalo)] = mejorCompra;
 
-    // Imprimimos el header de la tabla con los valores de los intervalos
-    cout << "Int.\t";
-    for (int i = 0; i < mem[0].size(); i++)
-    {
-        cout << i * intervalo << "\t";
-    }
-    cout << endl;
-
-    // Imprimimos la tabla después de calcular la mejor compra
-    for (int i = 0; i < mem.size(); i++)
-    {
-        cout << i << "\t";
-        for (int j = 0; j < mem[i].size(); j++)
-        {
-            cout << mem[i][j].beneficio << "\t";
-        }
-        cout << endl;
-    }
-    cout << "-------------------------" << endl;
+    // Imprimimos la tabla
+    printTabla(mem, intervalo);
     return mejorCompra;
 }
 
@@ -275,8 +281,10 @@ int main(int argc, char const *argv[])
     cout << "Orden de las empresas: " << endl;
     for (int i = 0; i < ordenEmpresas.size(); i++)
     {
-        cout << "i: " << ordenEmpresas[i].second << " ";
+        cout << "La " << i << " pasa a ser la " << ordenEmpresas[i].second ;
+        cout << endl ;
     }
+    cout << endl;
 
     vector<int> sharesOrden;
     vector<float> priceOrden;
@@ -313,6 +321,9 @@ int main(int argc, char const *argv[])
     // Tendremos NUM_INTERVALOS columnas, por lo que los intervalos serán la división del presupuesto entre NUM_INTERVALOS
     double intervalo = budget / NUM_INTERVALOS;
 
+    // Imprimimos la tabla
+    printTabla(mem, intervalo);
+
     // Calculamos los valores de la primera fila de la matriz de memorización, pues es el caso base donde el beneficio es el máximo que se puede obtener con el presupuesto de esa columna comprando acciones de la empresa 0
     for (int i = 0; i < mem[0].size(); i++)
     {
@@ -324,6 +335,9 @@ int main(int argc, char const *argv[])
         mem[0][i].acciones[0] = accionesComprables;
     }
 
+    // Imprimimos la tabla
+    printTabla(mem, intervalo);
+
     // Los valores de la la columna 0 tienen que ser 0 para cualquier empresa, pues con presupuesto 0 no se puede comprar ninguna acción
     for (int i = 0; i < mem.size(); i++)
     {
@@ -331,6 +345,9 @@ int main(int argc, char const *argv[])
         mem[i][0].coste = 0;
         mem[i][0].acciones = vector<int>(shares.size(), 0);
     }
+
+    // Imprimimos la tabla
+    printTabla(mem, intervalo);
 
     // Calculamos la mejor compra teniendo en cuenta todas las empresas para el presupuesto que se le pasa al programa
     Compra mejorCompra = calculoPD(mem, intervalo, budget, sharesOrden.size() - 1, sharesOrden, priceOrden, commissionsOrden, profitOrden);
