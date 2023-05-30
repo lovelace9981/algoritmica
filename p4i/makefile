@@ -16,7 +16,7 @@ clean:
 	@echo "Removing .bin files..."
 	rm *.bin
 
-BFrunInefficient:
+BFrunInefficient: buildBFineficiente
 	@echo "Running Inefficient Brute Force program for pruebaPapel.stocks with 10 budget..."
 	./BFmainIneficiente.bin 10 pruebaPapel.stocks
 
