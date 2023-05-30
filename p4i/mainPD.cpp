@@ -335,14 +335,6 @@ int main(int argc, char const *argv[])
     // Calculamos la mejor compra teniendo en cuenta todas las empresas para el presupuesto que se le pasa al programa
     Compra mejorCompra = calculoPD(mem, intervalo, budget, sharesOrden.size() - 1, sharesOrden, priceOrden, commissionsOrden, profitOrden);
 
-    // Imprimimos las acciones que tienen disponibles cada empresa
-    cout << "Acciones disponibles: ";
-    for (int i = 0; i < sharesOrden.size(); i++)
-    {
-        cout << sharesOrden[i] << " ";
-    }
-    cout << endl;
-
     // Imprimimos el beneficio y el coste de la mejor compra, además de la cantidad de acciones que se han comprado de cada empresa
     cout << "Mejor compra: ";
     for (int i = 0; i < mejorCompra.acciones.size(); i++)

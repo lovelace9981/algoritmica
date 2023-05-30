@@ -2,11 +2,15 @@ buildBF:
 	@echo "Building Brute Force program..."
 	g++ -o BFmain.bin main.cpp
 
+buildBFineficiente:
+	@echo "Building Inefficient Brute Force program..."
+	g++ -o BFmainIneficiente.bin main_ineficiente.cpp
+
 buildDP:
 	@echo "Building Dynamic Programming program..."
 	g++ -o DPmain.bin mainPD.cpp
 
-build: buildBF buildDP
+build: buildBF buildDP buildBFineficiente
 
 clean: 
 	@echo "Removing .bin files..."
